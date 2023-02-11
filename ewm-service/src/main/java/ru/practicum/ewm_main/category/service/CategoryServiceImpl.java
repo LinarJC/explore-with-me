@@ -15,7 +15,7 @@ import ru.practicum.ewm_main.exception.NotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
@@ -27,7 +27,6 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<CategoryDto> getCategories(int from, int size) {
         return categoryRepository.findAll(PageRequest.of(from / size, size))
                 .stream()
@@ -36,11 +35,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public CategoryDto getCategory(Long id) {
         return CategoryMapper.toCategoryDto(getAndCheckCategory(id));
     }
 
+    @Transactional
     @Override
     public CategoryDto updateCategory(CategoryDto categoryDto) {
         Category category = getAndCheckCategory(categoryDto.getId());
@@ -48,15 +47,17 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryMapper.toCategoryDto(categoryRepository.save(category));
     }
 
+    @Transactional
     @Override
     public CategoryDto createCategory(NewCategoryDto categoryDto) {
         return CategoryMapper.toCategoryDto(categoryRepository.save(CategoryMapper.toCategory(categoryDto)));
     }
 
+    @Transactional
     @Override
     public void deleteCategory(Long id) {
         if (!eventRepository.findAllByCategoryId(id).isEmpty()) {
-            throw new BadRequestException("category with event don't be delete");
+            throw new BadRequestException("only category without event can be delete");
         }
         categoryRepository.delete(getAndCheckCategory(id));
     }

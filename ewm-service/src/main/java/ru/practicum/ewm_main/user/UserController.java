@@ -22,7 +22,7 @@ public class UserController {
     public List<UserDto> getUsers(@RequestParam(required = false) List<Long> ids,
                                @RequestParam(defaultValue = "0") int from,
                                @RequestParam(defaultValue = "10") int size) {
-        log.info("get users: ids = {}, from = {}, size = {}", ids, from, size);
+        log.info("get users by param: ids = {}, from = {}, size = {}", ids, from, size);
         return userService.getUsers(ids, from, size);
     }
 

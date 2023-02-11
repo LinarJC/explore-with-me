@@ -9,5 +9,6 @@ import lombok.*;
 @NoArgsConstructor
 public class ShortUserDto {
     private Long id;
+
     private String name;
 }

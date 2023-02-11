@@ -26,33 +26,33 @@ public class AdminControllerCompilation {
 
     @DeleteMapping("/{id}")
     public void deleteCompilation(@PathVariable Long id) {
-        log.info("delete compilation - id {}", id);
+        log.info("delete compilation with id {}", id);
         compilationService.deleteCompilation(id);
     }
 
     @DeleteMapping("/{id}/events/{eventId}")
     public void deleteEventFromCompilation(@PathVariable Long id,
                                            @PathVariable Long eventId) {
-        log.info("delete event - id {} from compilation with id {}", eventId, id);
+        log.info("delete event with id {} from compilation with id {}", eventId, id);
         compilationService.deleteEventFromCompilation(id, eventId);
     }
 
     @PatchMapping("/{id}/events/{eventId}")
     public void addEventToCompilation(@PathVariable Long id,
                                       @PathVariable Long eventId) {
-        log.info("add event - id {} to compilation - id {}", eventId, id);
+        log.info("add event with id {} to compilation with id {}", eventId, id);
         compilationService.addEventToCompilation(id, eventId);
     }
 
     @DeleteMapping("/{id}/pin")
     public void deleteCompilationFromMainPage(@PathVariable Long id) {
-        log.info("delete compilation - id {} from main page", id);
+        log.info("delete compilation with id {} from main page", id);
         compilationService.deleteCompilationFromMainPage(id);
     }
 
     @PatchMapping("/{id}/pin")
     public void addCompilationToMainPage(@PathVariable Long id) {
-        log.info("add compilation - id {} to main page", id);
+        log.info("add compilation with id {} to main page", id);
         compilationService.addCompilationToMainPage(id);
     }
 }

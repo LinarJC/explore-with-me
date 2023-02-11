@@ -20,7 +20,7 @@ public class AdminCategoryController {
 
     @PatchMapping
     public CategoryDto updateCategory(@Valid @RequestBody CategoryDto categoryDto) {
-        log.info("update category - id {}", categoryDto.getId());
+        log.info("update category with id {}", categoryDto.getId());
         return categoryService.updateCategory(categoryDto);
     }
 
@@ -32,7 +32,7 @@ public class AdminCategoryController {
 
     @DeleteMapping("/{id}")
     public void deleteCategory(@PathVariable Long id) {
-        log.info("delete category - id {}", id);
+        log.info("delete category with id {}", id);
         categoryService.deleteCategory(id);
     }
 }

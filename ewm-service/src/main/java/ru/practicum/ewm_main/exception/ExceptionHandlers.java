@@ -19,7 +19,7 @@ public class ExceptionHandlers {
         return new ApiError.ApiErrorBuilder()
                 .errors(List.of(e.getClass().getName()))
                 .message(e.getLocalizedMessage())
-                .reason("The required object was found")
+                .reason("The required object was found.")
                 .status(HttpStatus.CONFLICT)
                 .build();
     }
@@ -47,17 +47,6 @@ public class ExceptionHandlers {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handleThrowableExceptions(final Throwable e) {
-        return new ApiError.ApiErrorBuilder()
-                .errors(List.of(e.getClass().getName()))
-                .message(e.getLocalizedMessage())
-                .reason("Throwable exception")
-                .status(HttpStatus.BAD_REQUEST)
-                .build();
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiError handleInternalServerErrorException(final HttpServerErrorException.InternalServerError e, WebRequest request) {
         return new ApiError.ApiErrorBuilder()
@@ -65,6 +54,17 @@ public class ExceptionHandlers {
                 .message(e.getLocalizedMessage())
                 .reason(request.getDescription(false))
                 .status(HttpStatus.FORBIDDEN)
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleThrowableExceptions(final Throwable e) {
+        return new ApiError.ApiErrorBuilder()
+                .errors(List.of(e.getClass().getName()))
+                .message(e.getLocalizedMessage())
+                .reason("Throwable exception")
+                .status(HttpStatus.BAD_REQUEST)
                 .build();
     }
 }

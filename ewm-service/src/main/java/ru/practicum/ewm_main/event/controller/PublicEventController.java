@@ -33,7 +33,7 @@ public class PublicEventController {
                                          @RequestParam (defaultValue = "0") int from,
                                          @RequestParam (defaultValue = "10") int size,
                                          HttpServletRequest httpServletRequest) {
-        log.info("get events: text = {}, categoryIds = {}, paid = {}, rangeStart = {}, rangeEnd = {}, " +
+        log.info("get events by param: text = {}, categoryIds = {}, paid = {}, rangeStart = {}, rangeEnd = {}, " +
                 "onlyAvailable = {}, sort = {}, from = {}, size = {}", text, categoryIds, paid, rangeStart, rangeEnd,
                 onlyAvailable, sort, from, size);
         eventClient.createHit(httpServletRequest);
@@ -43,7 +43,7 @@ public class PublicEventController {
     @GetMapping("/{id}")
     public EventDto getEvent(@PathVariable Long id,
                              HttpServletRequest httpServletRequest) {
-        log.info("get event - id {}", id);
+        log.info("get event with id {}", id);
         eventClient.createHit(httpServletRequest);
         return eventService.getEvent(id);
     }

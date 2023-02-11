@@ -1,12 +1,14 @@
 package ru.practicum.ewm_main.event.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class UserUpdateEventDto {
     private Long eventId;
 
