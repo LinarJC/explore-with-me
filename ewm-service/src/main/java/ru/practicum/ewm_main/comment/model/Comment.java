@@ -1,4 +1,4 @@
-package ru.practicum.ewm_main.participation.model;
+package ru.practicum.ewm_main.comment.model;
 
 import lombok.*;
 import ru.practicum.ewm_main.event.model.Event;
@@ -8,28 +8,29 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "participations")
+@Table(name = "comments")
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Participation {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private LocalDateTime created;
+    @Column(length = 1000, nullable = false)
+    private String text;
 
     @ManyToOne
-    @JoinColumn(name = "event_id")
+    private User user;
+
+    @ManyToOne
     private Event event;
 
-    @ManyToOne
-    @JoinColumn(name = "requester")
-    private User requester;
+    @Column(name = "created_on", nullable = false)
+    private LocalDateTime createdOn;
 
     @Enumerated(EnumType.STRING)
-    private StatusRequest status;
+    private CommentState state;
 }

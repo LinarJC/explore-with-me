@@ -6,8 +6,8 @@ import ru.practicum.ewm_main.event.dto.ShortEventDto;
 import ru.practicum.ewm_main.event.model.Event;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
+import static ru.practicum.ewm_main.Constant.DATE_TIME_FORMATTER;
 import static ru.practicum.ewm_main.category.CategoryMapper.toCategory;
 import static ru.practicum.ewm_main.category.CategoryMapper.toCategoryDto;
 import static ru.practicum.ewm_main.event.LocationMapper.toLocationDto;
@@ -21,9 +21,9 @@ public class EventMapper {
                 .id(event.getId())
                 .annotation(event.getAnnotation())
                 .category(toCategoryDto(event.getCategory()))
-                .createdOn(event.getCreatedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .createdOn(event.getCreatedOn().format(DATE_TIME_FORMATTER))
                 .description(event.getDescription())
-                .eventDate(event.getEventDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .eventDate(event.getEventDate().format(DATE_TIME_FORMATTER))
                 .initiator(toShortUserDto(event.getInitiator()))
                 .location(toLocationDto(event.getLocation()))
                 .paid(event.getPaid())
@@ -43,10 +43,10 @@ public class EventMapper {
                 .annotation(eventDto.getAnnotation())
                 .category(toCategory(eventDto.getCategory()))
                 .createdOn(LocalDateTime.parse(eventDto.getCreatedOn(),
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                        DATE_TIME_FORMATTER))
                 .description(eventDto.getDescription())
                 .eventDate(LocalDateTime.parse(eventDto.getEventDate(),
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                        DATE_TIME_FORMATTER))
                 .paid(eventDto.getPaid())
                 .participantLimit(eventDto.getParticipantLimit())
                 .publishedOn(eventDto.getPublishedOn())
@@ -62,7 +62,7 @@ public class EventMapper {
                 .id(event.getId())
                 .annotation(event.getAnnotation())
                 .category(toCategoryDto(event.getCategory()))
-                .eventDate(event.getEventDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .eventDate(event.getEventDate().format(DATE_TIME_FORMATTER))
                 .initiator(toShortUserDto(event.getInitiator()))
                 .paid(event.getPaid())
                 .title(event.getTitle())
@@ -77,7 +77,7 @@ public class EventMapper {
                 .annotation(shortEventDto.getAnnotation())
                 .category(toCategory(shortEventDto.getCategory()))
                 .eventDate(LocalDateTime.parse(shortEventDto.getEventDate(),
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                        DATE_TIME_FORMATTER))
                 .paid(shortEventDto.getPaid())
                 .title(shortEventDto.getTitle())
                 .build();
@@ -89,7 +89,7 @@ public class EventMapper {
                 .annotation(eventDto.getAnnotation())
                 .description(eventDto.getDescription())
                 .eventDate(LocalDateTime.parse(eventDto.getEventDate(),
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                        DATE_TIME_FORMATTER))
                 .paid(eventDto.getPaid())
                 .participantLimit(eventDto.getParticipantLimit())
                 .requestModeration(eventDto.getRequestModeration())

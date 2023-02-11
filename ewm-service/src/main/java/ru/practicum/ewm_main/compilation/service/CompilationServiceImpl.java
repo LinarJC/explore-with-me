@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import static ru.practicum.ewm_main.participation.model.StatusRequest.CONFIRMED;
 
-@Transactional(readOnly = true)
+@Transactional
 @Service
 public class CompilationServiceImpl implements CompilationService {
     private final CompilationRepository compilationRepository;
@@ -33,6 +33,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CompilationDto> getCompilations(Boolean pinned, int from, int size) {
         if (pinned == null) {
             return compilationRepository.findAll(PageRequest.of(from / size, size))
@@ -48,11 +49,11 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CompilationDto getCompilation(Long id) {
         return setViewsAndConfirmedRequests(CompilationMapper.toCompilationDto(getAndCheckCompilation(id)));
     }
 
-    @Transactional
     @Override
     public CompilationDto createCompilation(ShortCompilationDto compilationDto) {
         Compilation compilation = CompilationMapper.toCompilation(compilationDto);
@@ -61,13 +62,11 @@ public class CompilationServiceImpl implements CompilationService {
         return setViewsAndConfirmedRequests(CompilationMapper.toCompilationDto(compilationRepository.save(compilation)));
     }
 
-    @Transactional
     @Override
     public void deleteCompilation(Long id) {
         compilationRepository.delete(getAndCheckCompilation(id));
     }
 
-    @Transactional
     @Override
     public void deleteEventFromCompilation(Long id, Long eventId) {
         Compilation compilation = getAndCheckCompilation(id);
@@ -75,7 +74,6 @@ public class CompilationServiceImpl implements CompilationService {
         compilationRepository.save(compilation);
     }
 
-    @Transactional
     @Override
     public void addEventToCompilation(Long id, Long eventId) {
         Compilation compilation = getAndCheckCompilation(id);
@@ -83,7 +81,6 @@ public class CompilationServiceImpl implements CompilationService {
         compilationRepository.save(compilation);
     }
 
-    @Transactional
     @Override
     public void deleteCompilationFromMainPage(Long id) {
         Compilation compilation = getAndCheckCompilation(id);
@@ -91,7 +88,6 @@ public class CompilationServiceImpl implements CompilationService {
         compilationRepository.save(compilation);
     }
 
-    @Transactional
     @Override
     public void addCompilationToMainPage(Long id) {
         Compilation compilation = getAndCheckCompilation(id);
