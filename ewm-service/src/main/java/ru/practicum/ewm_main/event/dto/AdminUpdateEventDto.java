@@ -1,14 +1,12 @@
 package ru.practicum.ewm_main.event.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AdminUpdateEventDto {
     private String annotation;
 
