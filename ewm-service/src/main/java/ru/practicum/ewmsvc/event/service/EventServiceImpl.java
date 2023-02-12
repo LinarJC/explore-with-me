@@ -2,6 +2,7 @@ package ru.practicum.ewmsvc.event.service;
 
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +52,8 @@ public class EventServiceImpl implements EventService {
     private final RequestMapper requestMapper;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSS]");
     private final StatsClient client;
+    @Value("${stats-server.url}")
+    private static String statsServerUrl;
 
     @Override
     public List<EventShortDto> getEvents(String ip,
@@ -330,10 +333,10 @@ public class EventServiceImpl implements EventService {
     public ParticipationRequestDto confirmRequest(Long userId, Long eventId, Long reqId) {
         Event event = eventRepository.getReferenceById(eventId);
         if (event.getParticipantLimit() == 0) {
-            throw new BadRequestException("Подтверждение не требуется");
+            throw new BadRequestException("No confirmation required");
         }
         if (event.getParticipantLimit() != 0 && event.getConfirmedRequests().equals(event.getParticipantLimit())) {
-            throw new BadRequestException("Мест нет");
+            throw new BadRequestException("There are no seats");
         }
         Request request = requestService.getRequestByReqId(eventId, reqId);
         request.setStatus("CONFIRMED");
@@ -355,7 +358,7 @@ public class EventServiceImpl implements EventService {
     public EventFullDto publishEvent(Long eventId) {
         Event event = eventRepository.getReferenceById(eventId);
         if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Ошибка при публикации события");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Error when posting an event");
         }
         event.setState("PUBLISHED");
 
@@ -367,7 +370,7 @@ public class EventServiceImpl implements EventService {
     public EventFullDto rejectEvent(Long eventId) {
         Event event = eventRepository.getReferenceById(eventId);
         if (event.getState() == "PUBLISHED") {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Событие уже опубликовано");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Event already published");
         }
         event.setState("CANCELED");
         eventRepository.save(event);
@@ -389,7 +392,7 @@ public class EventServiceImpl implements EventService {
         String body = "{\"app\":\"ewm-main-service\", \"uri\":\"/events" + id + "\", \"ip\":\"" + ip + "\"}";
         HttpClient client = HttpClient.newBuilder().build();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:9090/hit"))
+                .uri(URI.create(statsServerUrl + "/hit"))
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build();
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString());

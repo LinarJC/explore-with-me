@@ -1,6 +1,7 @@
 package ru.practicum.client;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class StatsClient {
-    private static final String STATS_SERVER_URL = "http://localhost:9090";
+    @Value("${stats-server.url}")
+    private static String STATS_SERVER_URL;
     private static final RestTemplate template = new RestTemplate();
 
     public static ResponseEntity<Void> createHit(EndpointHitDto endpointHitDto) {
