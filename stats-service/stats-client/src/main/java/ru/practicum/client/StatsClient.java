@@ -16,8 +16,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class StatsClient {
-    @Value("${stats-server.url}")
-    private static String STATS_SERVER_URL;
+    private static final String STATS_SERVER_URL = "http://stats-server:9090";
     private static final RestTemplate template = new RestTemplate();
 
     public static ResponseEntity<Void> createHit(EndpointHitDto endpointHitDto) {
