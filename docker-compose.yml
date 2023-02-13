@@ -17,7 +17,7 @@ services:
       - STATS_DATASOURCE_USERNAME=root
       - STATS_DATASOURCE_PASSWORD=root
 
-  ewm-stats-db:
+  stats-db:
     image: postgres:9.5-alpine
     container_name: stats-db
     ports:
