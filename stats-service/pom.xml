@@ -10,9 +10,9 @@
     </parent>
 
     <modules>
-        <module>stats-dto</module>
         <module>stats-client</module>
         <module>stats-server</module>
+        <module>stats-dto</module>
     </modules>
 
     <modelVersion>4.0.0</modelVersion>
@@ -26,10 +26,4 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-    </dependencies>
 </project>
