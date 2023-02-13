@@ -36,13 +36,8 @@ services:
       - "8080:8080"
     depends_on:
       - ewm-db
-      - stats-server
     environment:
       - MAIN_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm-db
-      - STATS_SERVER_URL=http://stats-server:9090
-      - DB_HOST=ewm-db
-      - DB_PORT=5432
-      - DB_NAME=ewm-db
       - MAIN_DATASOURCE_USERNAME=root
       - MAIN_DATASOURCE_PASSWORD=root
   ewm-db:
