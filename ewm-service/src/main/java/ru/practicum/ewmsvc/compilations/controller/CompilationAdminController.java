@@ -18,7 +18,6 @@ import ru.practicum.ewmsvc.util.Create;
 @Validated
 @RequiredArgsConstructor
 @RequestMapping(path = "/admin/compilations")
-
 public class CompilationAdminController {
     private final CompilationService compilationService;
     private final EventsCompilationsService eventsCompilationsService;

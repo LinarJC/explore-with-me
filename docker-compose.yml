@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.8'
 services:
   stats-server:
     build: ./stats-service/stats-server
@@ -10,7 +10,6 @@ services:
       - stats-db
     environment:
       - STATS_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats-db
-      - SERVER_PORT=9090
       - STATS_DB_HOST=stats-db
       - STATS_DB_PORT=5432
       - STATS_DB_NAME=stats-db
@@ -18,7 +17,7 @@ services:
       - STATS_DATASOURCE_PASSWORD=root
 
   stats-db:
-    image: postgres:14-alpine
+    image: postgres:15.1-alpine
     container_name: stats-db
     ports:
       - "6541:5432"
@@ -26,6 +25,8 @@ services:
       - POSTGRES_DB=stats-db
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+    volumes:
+        - /var/lib/postgresql/data/
 
   ewm-service:
     build: ./ewm-service
@@ -39,14 +40,13 @@ services:
     environment:
       - MAIN_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm-db
       - STATS_SERVER_URL=http://stats-server:9090
-      - SERVER_PORT=8080
       - DB_HOST=ewm-db
       - DB_PORT=5432
       - DB_NAME=ewm-db
       - MAIN_DATASOURCE_USERNAME=root
       - MAIN_DATASOURCE_PASSWORD=root
   ewm-db:
-    image: postgres:14-alpine
+    image: postgres:15.1-alpine
     container_name: ewm-db
     ports:
       - "6542:5432"
@@ -54,3 +54,5 @@ services:
       - POSTGRES_DB=ewm-db
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+    volumes:
+      - /var/lib/postgresql/data/
