@@ -2,7 +2,6 @@ package ru.practicum.ewmsvc.event.service;
 
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -368,7 +367,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto rejectEvent(Long eventId) {
         Event event = eventRepository.getReferenceById(eventId);
-        if (event.getState() == "PUBLISHED") {
+        if (event.getState().equals("PUBLISHED")) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Event already published");
         }
         event.setState("CANCELED");

@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS users, category, compilations, events, events_compilations CASCADE;
-
 create table IF NOT EXISTS category
 (
     id   serial     not null
@@ -9,7 +7,7 @@ create table IF NOT EXISTS category
 );
 
 alter table category
-    owner to postgres;
+    owner to root;
 
 create table IF NOT EXISTS users
 (
@@ -23,7 +21,7 @@ create table IF NOT EXISTS users
 );
 
 alter table users
-    owner to postgres;
+    owner to root;
 
 create table IF NOT EXISTS events
 (
@@ -53,7 +51,7 @@ create table IF NOT EXISTS events
 );
 
 alter table events
-    owner to postgres;
+    owner to root;
 
 create table IF NOT EXISTS requests
 (
@@ -65,7 +63,7 @@ create table IF NOT EXISTS requests
 );
 
 alter table requests
-    owner to postgres;
+    owner to root;
 
 create table IF NOT EXISTS compilations
 (
@@ -75,7 +73,7 @@ create table IF NOT EXISTS compilations
 );
 
 alter table compilations
-    owner to postgres;
+    owner to root;
 
 create table IF NOT EXISTS events_compilations
 (
@@ -84,7 +82,7 @@ create table IF NOT EXISTS events_compilations
 );
 
 alter table events_compilations
-    owner to postgres;
+    owner to root;
 
 TRUNCATE events_compilations,
     compilations,
