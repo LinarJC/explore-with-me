@@ -386,7 +386,7 @@ public class EventServiceImpl implements EventService {
         }
     }
 
-    private static void saveHit(String ip, String id) {
+    private static void createHit(String ip, String id) {
         String body = "{\"app\":\"ewm-main-service\", \"uri\":\"/events" + id + "\", \"ip\":\"" + ip + "\"}";
         HttpClient client = HttpClient.newBuilder().build();
         HttpRequest request = HttpRequest.newBuilder()
@@ -394,8 +394,6 @@ public class EventServiceImpl implements EventService {
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build();
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-
-
     }
 
     private static LocalDateTime parseLocalDateTime(CharSequence text, DateTimeFormatter formatter) {
