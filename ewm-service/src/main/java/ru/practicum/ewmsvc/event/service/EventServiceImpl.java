@@ -52,8 +52,6 @@ public class EventServiceImpl implements EventService {
     private final RequestMapper requestMapper;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSS]");
     private final StatsClient client;
-    @Value("${stats-server.url}")
-    private static String statsServerUrl;
 
     @Override
     public List<EventShortDto> getEvents(String ip,
@@ -246,13 +244,14 @@ public class EventServiceImpl implements EventService {
         }
         if (Objects.equals(updatedEvent.getStateAction(), "PUBLISH_EVENT")) {
             if (event.getState().equals("PUBLISHED") || event.getState().equals("CANCELED")) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Событие уже опубликовано или отменено");
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "The event has already been published or canceled");
             }
             event.setState("PUBLISHED");
         }
         if (Objects.equals(updatedEvent.getStateAction(), "REJECT_EVENT")) {
             if (event.getState().equals("PUBLISHED")) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Событие уже опубликованоб отменить нельзя");
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "The event has already been published " +
+                        "and cannot be canceled");
             }
             event.setState("CANCELED");
         }
@@ -392,7 +391,7 @@ public class EventServiceImpl implements EventService {
         String body = "{\"app\":\"ewm-main-service\", \"uri\":\"/events" + id + "\", \"ip\":\"" + ip + "\"}";
         HttpClient client = HttpClient.newBuilder().build();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(statsServerUrl + "/hit"))
+                .uri(URI.create("http://localhost:9090/hit"))
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build();
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString());

@@ -18,7 +18,7 @@ services:
       - STATS_DATASOURCE_PASSWORD=root
 
   stats-db:
-    image: postgres:9.5-alpine
+    image: postgres:15.1-alpine
     container_name: stats-db
     ports:
       - "6541:5432"
@@ -47,7 +47,7 @@ services:
       - MAIN_DATASOURCE_PASSWORD=root
 
   ewm-db:
-    image: postgres:9.5-alpine
+    image: postgres:15.1-alpine
     container_name: ewm-db
     ports:
       - "6542:5432"

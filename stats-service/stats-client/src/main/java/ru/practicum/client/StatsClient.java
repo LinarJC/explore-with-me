@@ -18,7 +18,7 @@ public class StatsClient {
     private static final String STATS_SERVER_URL = "http://localhost:9090";
     private static final RestTemplate template = new RestTemplate();
 
-    public static ResponseEntity<Void> createHit(EndpointHitDto endpointHitDto) {
+    public ResponseEntity<Void> createHit(EndpointHitDto endpointHitDto) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
