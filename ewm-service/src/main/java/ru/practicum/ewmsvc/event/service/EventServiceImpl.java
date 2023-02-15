@@ -11,21 +11,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.EndpointHitDto;
 import ru.practicum.client.StatsClient;
-import ru.practicum.ewmsvc.category.model.Category;
 import ru.practicum.ewmsvc.category.repository.CategoryReposirory;
+import ru.practicum.ewmsvc.category.model.Category;
 import ru.practicum.ewmsvc.event.dto.*;
 import ru.practicum.ewmsvc.event.mapper.EventMapper;
 import ru.practicum.ewmsvc.event.model.Event;
 import ru.practicum.ewmsvc.event.repository.EventRepository;
 import ru.practicum.ewmsvc.exception.BadRequestException;
-import ru.practicum.ewmsvc.request.dto.ParticipationRequestDto;
 import ru.practicum.ewmsvc.request.mapper.RequestMapper;
-import ru.practicum.ewmsvc.request.model.Request;
 import ru.practicum.ewmsvc.request.service.RequestService;
-import ru.practicum.ewmsvc.user.model.User;
+import ru.practicum.ewmsvc.request.dto.ParticipationRequestDto;
+import ru.practicum.ewmsvc.request.model.Request;
 import ru.practicum.ewmsvc.user.repository.UserRepository;
+import ru.practicum.ewmsvc.user.model.User;
 import ru.practicum.ewmsvc.util.QPredicates;
-
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -63,7 +62,7 @@ public class EventServiceImpl implements EventService {
                                          String sort,
                                          Integer from,
                                          Integer size) {
-        client.createHit(new EndpointHitDto(
+        client.saveHit(new EndpointHitDto(
                 "ewm-main-service",
                 "/events",
                 ip,
@@ -140,7 +139,7 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findById(id).get();
         Category category = categoryReposirory.getReferenceById(event.getCategory());
         User user = userRepository.getReferenceById(event.getInitiator());
-        client.createHit(new EndpointHitDto(
+        client.saveHit(new EndpointHitDto(
                 "ewm-main-service",
                 "/events/" + id,
                 ip,
@@ -243,14 +242,13 @@ public class EventServiceImpl implements EventService {
         }
         if (Objects.equals(updatedEvent.getStateAction(), "PUBLISH_EVENT")) {
             if (event.getState().equals("PUBLISHED") || event.getState().equals("CANCELED")) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "The event has already been published or canceled");
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Событие уже опубликовано или отменено");
             }
             event.setState("PUBLISHED");
         }
         if (Objects.equals(updatedEvent.getStateAction(), "REJECT_EVENT")) {
             if (event.getState().equals("PUBLISHED")) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "The event has already been published " +
-                        "and cannot be canceled");
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Событие уже опубликованоб отменить нельзя");
             }
             event.setState("CANCELED");
         }
@@ -331,10 +329,10 @@ public class EventServiceImpl implements EventService {
     public ParticipationRequestDto confirmRequest(Long userId, Long eventId, Long reqId) {
         Event event = eventRepository.getReferenceById(eventId);
         if (event.getParticipantLimit() == 0) {
-            throw new BadRequestException("No confirmation required");
+            throw new BadRequestException("Подтверждение не требуется");
         }
         if (event.getParticipantLimit() != 0 && event.getConfirmedRequests().equals(event.getParticipantLimit())) {
-            throw new BadRequestException("There are no seats");
+            throw new BadRequestException("Мест нет");
         }
         Request request = requestService.getRequestByReqId(eventId, reqId);
         request.setStatus("CONFIRMED");
@@ -356,7 +354,7 @@ public class EventServiceImpl implements EventService {
     public EventFullDto publishEvent(Long eventId) {
         Event event = eventRepository.getReferenceById(eventId);
         if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Error when posting an event");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Ошибка при публикации события");
         }
         event.setState("PUBLISHED");
 
@@ -367,8 +365,8 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto rejectEvent(Long eventId) {
         Event event = eventRepository.getReferenceById(eventId);
-        if (event.getState().equals("PUBLISHED")) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Event already published");
+        if (event.getState() == "PUBLISHED") {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Событие уже опубликовано");
         }
         event.setState("CANCELED");
         eventRepository.save(event);
@@ -386,7 +384,7 @@ public class EventServiceImpl implements EventService {
         }
     }
 
-    private static void createHit(String ip, String id) {
+    private static void saveHit(String ip, String id) {
         String body = "{\"app\":\"ewm-main-service\", \"uri\":\"/events" + id + "\", \"ip\":\"" + ip + "\"}";
         HttpClient client = HttpClient.newBuilder().build();
         HttpRequest request = HttpRequest.newBuilder()
@@ -394,6 +392,8 @@ public class EventServiceImpl implements EventService {
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build();
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+
     }
 
     private static LocalDateTime parseLocalDateTime(CharSequence text, DateTimeFormatter formatter) {

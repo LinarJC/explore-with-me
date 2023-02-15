@@ -11,16 +11,19 @@ import ru.practicum.EndpointHitDto;
 
 @Service
 public class StatsClient extends BaseClient {
+
+    private static final String API_PREFIX = "/hit";
+
     @Autowired
-    public StatsClient(@Value("${stats-server.url}") String statsServerUrl, RestTemplateBuilder builder) {
+    public StatsClient(@Value("${stat-server.url}") String statsServerUrl, RestTemplateBuilder builder) {
         super(builder
-                .uriTemplateHandler(new DefaultUriBuilderFactory(statsServerUrl + "/hit"))
+                .uriTemplateHandler(new DefaultUriBuilderFactory(statsServerUrl + API_PREFIX))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                 .build()
         );
     }
 
-    public ResponseEntity<Object> createHit(EndpointHitDto hit) {
-        return postHit(hit);
+    public ResponseEntity<Object> saveHit(EndpointHitDto hit) {
+        return post("", hit);
     }
 }
