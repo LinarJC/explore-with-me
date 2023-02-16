@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class EventDateValidator implements ConstraintValidator<EventDate, String> {
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSS]");
+    private final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
     @Override
@@ -23,16 +23,16 @@ public class EventDateValidator implements ConstraintValidator<EventDate, String
             return true;
         }
 
-        if (parseLocalDateTime(date, formatter).isBefore(LocalDateTime.now().plusHours(2))) {
+        if (parseLocalDateTime(date, DTF).isBefore(LocalDateTime.now().plusHours(2))) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Invalid date");
         }
         return true;
     }
 
-    private static LocalDateTime parseLocalDateTime(CharSequence text, DateTimeFormatter formatter) {
+    private static LocalDateTime parseLocalDateTime(CharSequence text, DateTimeFormatter DTF) {
         if (text == null) {
             return null;
         }
-        return formatter.parse(text, LocalDateTime::from);
+        return DTF.parse(text, LocalDateTime::from);
     }
 }

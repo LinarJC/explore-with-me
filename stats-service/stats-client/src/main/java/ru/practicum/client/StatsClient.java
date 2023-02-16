@@ -42,7 +42,6 @@ public class StatsClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
 
-
         Map<String, ?> parameters = parameters(start, end, uris, unique);
         final String path = "?start={start}&end={end}&uris={uris}&unique={unique}";
 

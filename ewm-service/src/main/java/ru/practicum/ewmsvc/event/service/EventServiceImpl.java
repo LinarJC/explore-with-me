@@ -48,7 +48,7 @@ public class EventServiceImpl implements EventService {
     private final EventMapper eventMapper;
     private final RequestService requestService;
     private final RequestMapper requestMapper;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss[.SSS]");
+    private final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final StatsClient client;
 
     @Override
@@ -66,14 +66,14 @@ public class EventServiceImpl implements EventService {
                 "ewm-main-service",
                 "/events",
                 ip,
-                LocalDateTime.now().format(formatter)
+                LocalDateTime.now().format(DTF)
         ));
         Predicate predicate = QPredicates.builder()
                 .add(text, (event.annotation.containsIgnoreCase(String.valueOf(text))).or(event.description.containsIgnoreCase(String.valueOf(text))))
                 .add(categories, event.category::in)
                 .add(paid, event.paid::eq)
-                .add(parseLocalDateTime(rangeStart, formatter), event.eventDate::goe)
-                .add(parseLocalDateTime(rangeEnd, formatter), event.eventDate::lt)
+                .add(parseLocalDateTime(rangeStart, DTF), event.eventDate::goe)
+                .add(parseLocalDateTime(rangeEnd, DTF), event.eventDate::lt)
                 .add(onlyAvailable, event.participantLimit.gt(event.confirmedRequests)
                         .and(event.participantLimit.ne(0)).or(event.participantLimit.eq(0)))
                 .buildAnd();
@@ -110,8 +110,8 @@ public class EventServiceImpl implements EventService {
                 .add(users, event.initiator::in)
                 .add(states, event.state::in)
                 .add(categories, event.category::in)
-                .add(parseLocalDateTime(rangeStart, formatter), event.eventDate::goe)
-                .add(parseLocalDateTime(rangeEnd, formatter), event.eventDate::lt)
+                .add(parseLocalDateTime(rangeStart, DTF), event.eventDate::goe)
+                .add(parseLocalDateTime(rangeEnd, DTF), event.eventDate::lt)
                 .buildAnd();
 
         Pageable pageable = PageRequest.of(from, size);
@@ -143,7 +143,7 @@ public class EventServiceImpl implements EventService {
                 "ewm-main-service",
                 "/events/" + id,
                 ip,
-                LocalDateTime.now().format(formatter)
+                LocalDateTime.now().format(DTF)
         ));
         return eventMapper.mapToFullDto(event, category, user);
     }
@@ -183,7 +183,7 @@ public class EventServiceImpl implements EventService {
                 event.setDescription(updateEventRequest.getDescription());
             }
             if (updateEventRequest.getEventDate() != null) {
-                event.setEventDate(parseLocalDateTime(updateEventRequest.getEventDate(), formatter));
+                event.setEventDate(parseLocalDateTime(updateEventRequest.getEventDate(), DTF));
             }
             if (updateEventRequest.getLocation() != null) {
                 event.setLocationLat(updateEventRequest.getLocation().getLat());
@@ -222,10 +222,10 @@ public class EventServiceImpl implements EventService {
             event.setDescription(updatedEvent.getDescription());
         }
         if (updatedEvent.getEventDate() != null) {
-            if (parseLocalDateTime(updatedEvent.getEventDate(), formatter).isBefore(LocalDateTime.now())) {
+            if (parseLocalDateTime(updatedEvent.getEventDate(), DTF).isBefore(LocalDateTime.now())) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Дата уже наступила");
             }
-            event.setEventDate(parseLocalDateTime(updatedEvent.getEventDate(), formatter));
+            event.setEventDate(parseLocalDateTime(updatedEvent.getEventDate(), DTF));
         }
         if (updatedEvent.getLocation() != null) {
             event.setLocationLat(updatedEvent.getLocation().getLat());
@@ -396,10 +396,10 @@ public class EventServiceImpl implements EventService {
 
     }
 
-    private static LocalDateTime parseLocalDateTime(CharSequence text, DateTimeFormatter formatter) {
+    private static LocalDateTime parseLocalDateTime(CharSequence text, DateTimeFormatter DTF) {
         if (text == null) {
             return null;
         }
-        return formatter.parse(text, LocalDateTime::from);
+        return DTF.parse(text, LocalDateTime::from);
     }
 }

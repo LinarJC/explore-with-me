@@ -24,7 +24,7 @@ public class StatsController {
     private static final String DTFPattern = "yyyy-MM-dd HH:mm:ss";
 
     @PostMapping("/hit")
-    public ResponseEntity<Void> createHit(@RequestBody @Valid EndpointHitDto endpointHitDto) {
+    public ResponseEntity<Void> saveHit(@RequestBody @Valid EndpointHitDto endpointHitDto) {
         log.info("Hit with URI = {} save to stats", endpointHitDto.getUri());
         statsService.saveEndpointHit(endpointHitDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
