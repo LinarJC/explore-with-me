@@ -17,9 +17,11 @@ import java.util.stream.Collectors;
 public class BaseClient {
     private static final String STATS_SERVER_URL = "http://stats-server:9090";
     private static RestTemplate template = new RestTemplate();
+
     public BaseClient(RestTemplate template) {
         BaseClient.template = template;
     }
+
     public ResponseEntity<Object> postHit(EndpointHitDto endpointHitDto) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
