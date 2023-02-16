@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS category, users, events, requests, compilations, events_compilations;
+
 create table IF NOT EXISTS category
 (
     id   serial     not null
