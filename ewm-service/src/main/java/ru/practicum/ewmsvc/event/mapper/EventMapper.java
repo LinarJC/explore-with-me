@@ -19,8 +19,8 @@ import java.time.format.DateTimeFormatter;
 public class EventMapper {
     private final CategoryService categoryService;
     private final UserService userService;
-    private final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private final DateTimeFormatter outDTF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final DateTimeFormatter outdtFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 
     public EventFullDto mapToFullDto(Event event, Category category, User user) {
@@ -30,7 +30,7 @@ public class EventMapper {
                 event.getConfirmedRequests(),
                 event.getCreatedOn(),
                 event.getDescription(),
-                event.getEventDate().format(outDTF),
+                event.getEventDate().format(outdtFormatter),
                 event.getId(),
                 new EventFullDto.UserShortDto(user.getId(), user.getName()),
                 new EventFullDto.Location(event.getLocationLat(), event.getLocationLon()),
@@ -53,7 +53,7 @@ public class EventMapper {
                 event.getConfirmedRequests(),
                 event.getCreatedOn(),
                 event.getDescription(),
-                event.getEventDate().format(outDTF),
+                event.getEventDate().format(outdtFormatter),
                 event.getId(),
                 new EventFullDto.UserShortDto(
                         userService.getUser(event.getInitiator()).getId(),
@@ -76,7 +76,7 @@ public class EventMapper {
                         categoryService.getCategory(event.getCategory()).getId(),
                         categoryService.getCategory(event.getCategory()).getName()),
                 event.getConfirmedRequests(),
-                event.getEventDate().format(outDTF),
+                event.getEventDate().format(outdtFormatter),
                 event.getId(),
                 new EventFullDto.UserShortDto(
                         userService.getUser(event.getInitiator()).getId(),
@@ -95,7 +95,7 @@ public class EventMapper {
                 0,
                 LocalDateTime.now(),
                 newEventDto.getDescription(),
-                parseLocalDateTime(newEventDto.getEventDate(), DTF),
+                parseLocalDateTime(newEventDto.getEventDate(), dtFormatter),
                 userId,
                 newEventDto.getLocation().getLat(),
                 newEventDto.getLocation().getLon(),
@@ -109,10 +109,10 @@ public class EventMapper {
         );
     }
 
-    private static LocalDateTime parseLocalDateTime(CharSequence text, DateTimeFormatter DTF) {
+    private static LocalDateTime parseLocalDateTime(CharSequence text, DateTimeFormatter dtFormatter) {
         if (text == null) {
             return null;
         }
-        return DTF.parse(text, LocalDateTime::from);
+        return dtFormatter.parse(text, LocalDateTime::from);
     }
 }
