@@ -17,8 +17,9 @@ import java.util.stream.Collectors;
 public class BaseClient {
     private static final String STATS_SERVER_URL = "http://stats-server:9090";
     private static RestTemplate template = new RestTemplate();
-    public BaseClient(RestTemplate template) {BaseClient.template = template;}
-
+    public BaseClient(RestTemplate template) {
+        BaseClient.template = template;
+    }
     public ResponseEntity<Object> postHit(EndpointHitDto endpointHitDto) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -38,7 +39,6 @@ public class BaseClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-
 
         Map<String, ?> parameters = parameters(start, end, uris, unique);
         final String path = "?start={start}&end={end}&uris={uris}&unique={unique}";
