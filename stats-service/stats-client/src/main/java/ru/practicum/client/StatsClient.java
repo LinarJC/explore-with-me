@@ -13,19 +13,16 @@ import ru.practicum.EndpointHitDto;
 @Service
 @Component
 public class StatsClient extends BaseClient {
-
-    private static final String API_PREFIX = "/hit";
-
     @Autowired
-    public StatsClient(@Value("http://stats-server:9090") String serverUrl, RestTemplateBuilder builder) {
+    public StatsClient(@Value("http://stats-server:9090") String statsServerUrl, RestTemplateBuilder builder) {
         super(builder
-                .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
+                .uriTemplateHandler(new DefaultUriBuilderFactory(statsServerUrl + "/hit"))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                 .build()
         );
     }
 
     public ResponseEntity<Object> saveHit(EndpointHitDto hit) {
-        return post("", hit);
+        return postHit(hit);
     }
 }
