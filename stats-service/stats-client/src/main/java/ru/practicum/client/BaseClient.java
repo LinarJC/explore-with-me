@@ -19,7 +19,7 @@ public class BaseClient {
     private static RestTemplate template = new RestTemplate();
 
     public BaseClient(RestTemplate template) {
-        BaseClient.template = template;
+        this.template = template;
     }
 
     public ResponseEntity<Object> postHit(EndpointHitDto endpointHitDto) {
