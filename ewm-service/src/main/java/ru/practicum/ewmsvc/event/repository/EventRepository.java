@@ -26,4 +26,10 @@ public interface EventRepository extends JpaRepository<Event, Long>,
                     "FROM events " +
                     "WHERE events.category = ?1")
     List<Event> findEventsByCategory(Long categoryId);
+
+    @Query(nativeQuery = true,
+            value = "SELECT COUNT(*) " +
+            "FROM events " +
+            "WHERE events.category = :catId")
+    Integer getCountFindEventsByCategory(Long catId);
 }

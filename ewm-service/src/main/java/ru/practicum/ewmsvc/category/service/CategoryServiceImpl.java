@@ -14,6 +14,7 @@ import ru.practicum.ewmsvc.category.model.Category;
 import ru.practicum.ewmsvc.category.repository.CategoryRepository;
 import ru.practicum.ewmsvc.event.repository.EventRepository;
 
+import javax.validation.ValidationException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -36,17 +37,20 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto getCategory(Long id) {
-        if (!categoryRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such category");
+        try {
+            Category category = categoryRepository.getReferenceById(id);
+            return categoryMapper.mapCategoryToDto(category);
+        } catch (Exception exception) {
+            throw new ValidationException("No such category",
+                    new ResponseStatusException(HttpStatus.NOT_FOUND, "No such category"));
         }
-        Category category = categoryRepository.getReferenceById(id);
-        return categoryMapper.mapCategoryToDto(category);
     }
 
     @Override
     public CategoryDto patchCategory(Long catId, NewCategoryDto categoryDto) {
         if (categoryRepository.existsCategoryByName(categoryDto.getName())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "This name is exist");
+            throw new ValidationException("Empty field",
+            new ResponseStatusException(HttpStatus.CONFLICT, "This name is exist"));
         }
         Category category = categoryRepository.getReferenceById(catId);
         category.setName(categoryDto.getName());
@@ -57,10 +61,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto saveCategory(NewCategoryDto categoryDto) {
         if (categoryDto.getName() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uncorrected request");
+            throw new ValidationException("Empty field",
+                    new ResponseStatusException(HttpStatus.CONFLICT, "Uncorrected request"));
         }
         if (categoryRepository.existsCategoryByName(categoryDto.getName())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "This name is exist");
+            throw new ValidationException("This name is exist",
+                    new ResponseStatusException(HttpStatus.CONFLICT, "This name is exist"));
         }
         Category category = categoryMapper.mapNewToCategory(categoryDto);
         categoryRepository.save(category);
@@ -69,8 +75,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategory(Long catId) {
-        if (eventRepository.findEventsByCategory(catId).size() > 0) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "You can't delete a category with related events");
+        if (eventRepository.getCountFindEventsByCategory(catId) > 0) {
+            throw new ValidationException("You can't delete a category with related events",
+            new ResponseStatusException(HttpStatus.CONFLICT, "You can't delete a category with related events"));
         }
         categoryRepository.deleteById(catId);
     }

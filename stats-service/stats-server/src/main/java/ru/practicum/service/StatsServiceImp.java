@@ -33,6 +33,5 @@ public class StatsServiceImp implements StatsService {
         } else {
             return statsRepository.getStats(start, end, uris);
         }
-
     }
 }

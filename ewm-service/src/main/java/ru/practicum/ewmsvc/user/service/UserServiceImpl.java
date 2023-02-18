@@ -13,6 +13,7 @@ import ru.practicum.ewmsvc.user.mapper.UserMapper;
 import ru.practicum.ewmsvc.user.model.User;
 import ru.practicum.ewmsvc.user.repository.UserRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -43,6 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDto saveUser(NewUserDto newUserDto) {
         if (newUserDto.getName() == null || newUserDto.getEmail() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uncorrected request");
@@ -56,6 +58,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
     }

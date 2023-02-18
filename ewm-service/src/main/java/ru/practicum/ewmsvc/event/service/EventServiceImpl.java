@@ -25,6 +25,7 @@ import ru.practicum.ewmsvc.request.model.Request;
 import ru.practicum.ewmsvc.user.repository.UserRepository;
 import ru.practicum.ewmsvc.user.model.User;
 import ru.practicum.ewmsvc.util.QPredicates;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;

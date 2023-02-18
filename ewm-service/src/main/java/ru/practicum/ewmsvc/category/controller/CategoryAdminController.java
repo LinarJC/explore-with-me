@@ -11,6 +11,8 @@ import ru.practicum.ewmsvc.category.dto.NewCategoryDto;
 import ru.practicum.ewmsvc.util.Create;
 import ru.practicum.ewmsvc.util.Update;
 
+import javax.xml.bind.ValidationException;
+
 @RestController
 @Slf4j
 @RequiredArgsConstructor
