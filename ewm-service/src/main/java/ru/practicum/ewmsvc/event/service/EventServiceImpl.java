@@ -13,6 +13,8 @@ import ru.practicum.EndpointHitDto;
 import ru.practicum.client.StatsClient;
 import ru.practicum.ewmsvc.category.repository.CategoryRepository;
 import ru.practicum.ewmsvc.category.model.Category;
+import ru.practicum.ewmsvc.comment.service.CommentService;
+import ru.practicum.ewmsvc.comment.dto.CommentDto;
 import ru.practicum.ewmsvc.event.dto.*;
 import ru.practicum.ewmsvc.event.mapper.EventMapper;
 import ru.practicum.ewmsvc.event.model.Event;
@@ -51,6 +53,8 @@ public class EventServiceImpl implements EventService {
     private final RequestMapper requestMapper;
     private final DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final StatsClient client;
+
+    private final CommentService commentService;
 
     @Override
     public List<EventShortDto> getEvents(String ip,
@@ -360,7 +364,6 @@ public class EventServiceImpl implements EventService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Error when publishing an event");
         }
         event.setState("PUBLISHED");
-
         eventRepository.save(event);
         return eventMapper.mapToFullDto(event);
     }
@@ -395,8 +398,6 @@ public class EventServiceImpl implements EventService {
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build();
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-
-
     }
 
     private static LocalDateTime parseLocalDateTime(CharSequence text, DateTimeFormatter dtFormatter) {
@@ -404,5 +405,12 @@ public class EventServiceImpl implements EventService {
             return null;
         }
         return dtFormatter.parse(text, LocalDateTime::from);
+    }
+
+    @Override
+    public EventWithCommentsDto getEventWithComments(Long id) {
+        Event event = eventRepository.getReferenceById(id);
+        List<CommentDto> comments = commentService.getCommentsByEventId(id);
+        return eventMapper.mapToEventWithComments(event, comments);
     }
 }

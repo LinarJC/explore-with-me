@@ -56,4 +56,6 @@ public interface EventService {
     EventFullDto rejectEvent(Long eventId);
 
     void checkEventsExist(List<Long> eventIds);
+
+    EventWithCommentsDto getEventWithComments(Long id);
 }

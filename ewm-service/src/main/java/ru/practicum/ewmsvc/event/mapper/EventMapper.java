@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewmsvc.category.service.CategoryService;
 import ru.practicum.ewmsvc.category.model.Category;
+import ru.practicum.ewmsvc.comment.dto.CommentDto;
 import ru.practicum.ewmsvc.event.dto.EventFullDto;
 import ru.practicum.ewmsvc.event.dto.EventShortDto;
+import ru.practicum.ewmsvc.event.dto.EventWithCommentsDto;
 import ru.practicum.ewmsvc.event.dto.NewEventDto;
 import ru.practicum.ewmsvc.event.model.Event;
 import ru.practicum.ewmsvc.user.service.UserService;
@@ -13,6 +15,7 @@ import ru.practicum.ewmsvc.user.model.User;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -115,4 +118,12 @@ public class EventMapper {
         }
         return dtFormatter.parse(text, LocalDateTime::from);
     }
+
+    public EventWithCommentsDto mapToEventWithComments(Event event, List<CommentDto> comments) {
+        return new EventWithCommentsDto(
+                mapToShortDto(event),
+                comments
+        );
+    }
+
 }

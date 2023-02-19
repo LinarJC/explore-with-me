@@ -75,4 +75,9 @@ public class RequestServiceImpl implements RequestService {
         requestRepository.save(request);
         return requestMapper.mapToDto(request);
     }
+
+    @Override
+    public Request getRequestByEventIdAndRequesterId(Long eventId, Long requesterId) {
+        return requestRepository.getRequestByUserIdAndEventId(requesterId, eventId);
+    }
 }
