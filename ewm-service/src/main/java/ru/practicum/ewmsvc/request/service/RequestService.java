@@ -19,4 +19,7 @@ public interface RequestService {
     ParticipationRequestDto saveRequest(Long userId, Long eventId);
 
     ParticipationRequestDto cancelRequest(Long userId, Long requestId);
+
+    Request getRequestByEventIdAndRequesterId(Long eventId, Long requesterId);
+
 }

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewmsvc.event.service.EventService;
 import ru.practicum.ewmsvc.event.dto.EventFullDto;
 import ru.practicum.ewmsvc.event.dto.EventShortDto;
+import ru.practicum.ewmsvc.event.dto.EventWithCommentsDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -42,4 +43,11 @@ public class EventController {
         String ip = request.getRemoteAddr();
         return eventService.getEvent(id, ip);
     }
+
+    @GetMapping("/{id}/comments")
+    public EventWithCommentsDto getEventWithComments(@PathVariable Long id) {
+        log.info("Request endpoint: 'GET /events/{} (Получение события по id со всеми комментариями)", id);
+        return eventService.getEventWithComments(id);
+    }
+    
 }
