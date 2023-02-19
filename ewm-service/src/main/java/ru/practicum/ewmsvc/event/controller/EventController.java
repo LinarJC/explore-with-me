@@ -49,5 +49,4 @@ public class EventController {
         log.info("Request endpoint: 'GET /events/{} (Получение события по id со всеми комментариями)", id);
         return eventService.getEventWithComments(id);
     }
-    
 }
