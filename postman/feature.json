@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "a6d4326d-c077-483a-93fd-4275c5dc765d",
+		"_postman_id": "19627f6e-908d-4dc1-8024-fbf484ff4435",
 		"name": "Test API - Explore With Me - Feature - Comments",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "21729113"
+		"_exporter_id": "25935421"
 	},
 	"item": [
 		{
@@ -20,7 +20,7 @@
 							"});",
 							"",
 							"var jsonData = JSON.parse(responseBody);",
-							"pm.collectionVariables.set(\"createdUserId\", jsonData.id);"
+							"pm.collectionVariables.set(\"User1Id\", jsonData.id);"
 						],
 						"type": "text/javascript"
 					}
@@ -65,7 +65,7 @@
 							"});",
 							"",
 							"var jsonData = JSON.parse(responseBody);",
-							"pm.collectionVariables.set(\"createdCategoryId\", jsonData.id);",
+							"pm.collectionVariables.set(\"Category1Id\", jsonData.id);",
 							""
 						],
 						"type": "text/javascript"
@@ -111,7 +111,7 @@
 							"});",
 							"",
 							"var jsonData = JSON.parse(responseBody);",
-							"pm.collectionVariables.set(\"createdEventId\", jsonData.id);"
+							"pm.collectionVariables.set(\"Event1Id\", jsonData.id);"
 						],
 						"type": "text/javascript"
 					}
@@ -122,7 +122,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"annotation\":\"Фестиваль квадратных пицц и круглых кубиков льда\",\n    \"category\":{{createdCategoryId}},\n    \"description\":\"Такого вы еще точно не видели\",\n    \"eventDate\":\"2023-06-07 11:11:11\",\n    \"location\":\n       {\n         \"lat\": 54.718413,\n         \"lon\": 55.925944\n       },\n    \"paid\": true,\n    \"participantLimit\": 10,\n    \"requestModeration\": false,\n    \"title\": \"Фестиваль\"\n}",
+					"raw": "{\n    \"annotation\":\"Фестиваль квадратных пицц и круглых кубиков льда\",\n    \"category\":{{Category1Id}},\n    \"description\":\"Такого вы еще точно не видели\",\n    \"eventDate\":\"2023-06-07 11:11:11\",\n    \"location\":\n       {\n         \"lat\": 54.718413,\n         \"lon\": 55.925944\n       },\n    \"paid\": true,\n    \"participantLimit\": 10,\n    \"requestModeration\": false,\n    \"title\": \"Фестиваль\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -142,7 +142,7 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "{{createdUserId}}"
+							"value": "{{User1Id}}"
 						}
 					]
 				}
@@ -188,7 +188,7 @@
 					"variable": [
 						{
 							"key": "eventId",
-							"value": "{{createdEventId}}"
+							"value": "{{Event1Id}}"
 						}
 					]
 				}
@@ -261,7 +261,7 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/requests?eventId={{createdEventId}}",
+					"raw": "{{baseUrl}}/users/:userId/requests?eventId={{Event1Id}}",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -273,13 +273,13 @@
 					"query": [
 						{
 							"key": "eventId",
-							"value": "{{createdEventId}}"
+							"value": "{{Event1Id}}"
 						}
 					],
 					"variable": [
 						{
 							"key": "userId",
-							"value": "{{anotherUserId}}"
+							"value": "{{User2Id}}"
 						}
 					]
 				}
@@ -344,11 +344,11 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "{{anotherUserId}}"
+							"value": "{{User2Id}}"
 						},
 						{
 							"key": "eventId",
-							"value": "{{createdEventId}}"
+							"value": "{{Event1Id}}"
 						}
 					]
 				}
@@ -399,11 +399,11 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "{{anotherUserId}}"
+							"value": "{{User2Id}}"
 						},
 						{
 							"key": "eventId",
-							"value": "{{createdEventId}}"
+							"value": "{{Event1Id}}"
 						}
 					]
 				}
@@ -424,7 +424,7 @@
 							"});",
 							"",
 							"var jsonData = JSON.parse(responseBody);",
-							"pm.collectionVariables.set(\"anotherEventId\", jsonData.id);"
+							"pm.collectionVariables.set(\"Event2Id\", jsonData.id);"
 						],
 						"type": "text/javascript"
 					}
@@ -435,7 +435,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"annotation\":\"Выставка самых колючих ёжиков со всего мира\",\n    \"category\":{{createdCategoryId}},\n    \"description\":\"Такого острого ощущения вы еще не испытавали!\",\n    \"eventDate\":\"2023-07-07 12:12:12\",\n    \"location\":\n       {\n         \"lat\": 54.711840,\n         \"lon\": 55.963470\n       },\n    \"paid\": false,\n    \"participantLimit\": 10,\n    \"requestModeration\": false,\n    \"title\": \"Выставка\"\n}",
+					"raw": "{\n    \"annotation\":\"Выставка самых колючих ёжиков со всего мира\",\n    \"category\":{{Category1Id}},\n    \"description\":\"Такого острого ощущения вы еще не испытавали!\",\n    \"eventDate\":\"2023-07-07 12:12:12\",\n    \"location\":\n       {\n         \"lat\": 54.711840,\n         \"lon\": 55.963470\n       },\n    \"paid\": false,\n    \"participantLimit\": 10,\n    \"requestModeration\": false,\n    \"title\": \"Выставка\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -455,7 +455,7 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "{{anotherUserId}}"
+							"value": "{{User2Id}}"
 						}
 					]
 				}
@@ -501,7 +501,7 @@
 					"variable": [
 						{
 							"key": "eventId",
-							"value": "{{anotherEventId}}"
+							"value": "{{Event2Id}}"
 						}
 					]
 				}
@@ -529,7 +529,7 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/requests?eventId={{anotherEventId}}",
+					"raw": "{{baseUrl}}/users/:userId/requests?eventId={{Event2Id}}",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -541,13 +541,13 @@
 					"query": [
 						{
 							"key": "eventId",
-							"value": "{{anotherEventId}}"
+							"value": "{{Event2Id}}"
 						}
 					],
 					"variable": [
 						{
 							"key": "userId",
-							"value": "{{createdUserId}}"
+							"value": "{{User1Id}}"
 						}
 					]
 				}
@@ -609,11 +609,11 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "{{createdUserId}}"
+							"value": "{{User1Id}}"
 						},
 						{
 							"key": "eventId",
-							"value": "{{anotherEventId}}"
+							"value": "{{Event2Id}}"
 						}
 					]
 				}
@@ -657,7 +657,7 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "{{createdUserId}}"
+							"value": "{{User1Id}}"
 						}
 					]
 				}
@@ -713,7 +713,7 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "{{anotherUserId}}"
+							"value": "{{User2Id}}"
 						},
 						{
 							"key": "commentId",
@@ -845,7 +845,7 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/requests?eventId={{createdEventId}}",
+					"raw": "{{baseUrl}}/users/:userId/requests?eventId={{Event1Id}}",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -857,7 +857,7 @@
 					"query": [
 						{
 							"key": "eventId",
-							"value": "{{createdEventId}}"
+							"value": "{{Event1Id}}"
 						}
 					],
 					"variable": [
@@ -929,7 +929,7 @@
 						},
 						{
 							"key": "eventId",
-							"value": "{{createdEventId}}"
+							"value": "{{Event1Id}}"
 						}
 					]
 				}
@@ -974,7 +974,7 @@
 					"variable": [
 						{
 							"key": "id",
-							"value": "{{createdEventId}}"
+							"value": "{{Event1Id}}"
 						}
 					]
 				}
@@ -1009,17 +1009,17 @@
 			"type": "string"
 		},
 		{
-			"key": "createdUserId",
+			"key": "User1Id",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"key": "createdCategoryId",
+			"key": "Category1Id",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"key": "createdEventId",
+			"key": "Event1Id",
 			"value": "",
 			"type": "string"
 		},
@@ -1029,12 +1029,12 @@
 			"type": "string"
 		},
 		{
-			"key": "anotherUserId",
+			"key": "User2Id",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"key": "anotherEventId",
+			"key": "Event2Id",
 			"value": "",
 			"type": "string"
 		},
@@ -1042,10 +1042,6 @@
 			"key": "user3Id",
 			"value": "",
 			"type": "string"
-		},
-		{
-			"key": "anotherUserId",
-			"value": ""
 		}
 	]
 }
