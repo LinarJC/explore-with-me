@@ -17,29 +17,29 @@ public class RequestController {
     private final RequestService requestService;
 
     @GetMapping
-    public List<ParticipationRequestDto> getRequestsByUserId(
+    public List<ParticipationRequestDto> getByUserId(
             @PathVariable Long userId
     ) {
         log.info("Request endpoint: 'GET /users/{}/requests')", userId);
-        return requestService.getRequestsByUserId(userId);
+        return requestService.getByUserId(userId);
     }
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ParticipationRequestDto saveRequest(
+    public ParticipationRequestDto save(
             @PathVariable Long userId,
             @RequestParam Long eventId
     ) {
         log.info("Request endpoint: 'POST /users/{}/requests'", userId);
-        return requestService.saveRequest(userId, eventId);
+        return requestService.save(userId, eventId);
     }
 
     @PatchMapping("/{requestId}/cancel")
-    public ParticipationRequestDto cancelRequest(
+    public ParticipationRequestDto cancel(
             @PathVariable Long userId,
             @PathVariable Long requestId
     ) {
         log.info("Request endpoint: 'PATCH /users/{}/requests/{}/cancel'", userId, requestId);
-        return requestService.cancelRequest(userId, requestId);
+        return requestService.cancel(userId, requestId);
     }
 }

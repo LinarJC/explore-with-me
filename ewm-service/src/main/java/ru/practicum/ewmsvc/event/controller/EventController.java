@@ -20,7 +20,7 @@ public class EventController {
     private final HttpServletRequest request;
 
     @GetMapping
-    public List<EventShortDto> getEvents(
+    public List<EventShortDto> get(
             @RequestParam(name = "text", required = false) String text,
             @RequestParam(name = "categories", required = false) List<Long> categories,
             @RequestParam(name = "paid", required = false) Boolean paid,
@@ -33,20 +33,20 @@ public class EventController {
     ) {
         log.info("Request endpoint: 'GET /events'");
         String ip = request.getRemoteAddr();
-        return eventService.getEvents(ip, text, categories, paid, rangeStart, rangeEnd,
+        return eventService.get(ip, text, categories, paid, rangeStart, rangeEnd,
                 onlyAvailable, sort, from, size);
     }
 
     @GetMapping("/{id}")
-    public EventFullDto getEvent(@PathVariable Long id) {
+    public EventFullDto get(@PathVariable Long id) {
         log.info("Request endpoint: 'GET /events/{}", id);
         String ip = request.getRemoteAddr();
-        return eventService.getEvent(id, ip);
+        return eventService.get(id, ip);
     }
 
     @GetMapping("/{id}/comments")
-    public EventWithCommentsDto getEventWithComments(@PathVariable Long id) {
+    public EventWithCommentsDto getWithComments(@PathVariable Long id) {
         log.info("Request endpoint: 'GET /events/{} (Getting an event by id with all comments)", id);
-        return eventService.getEventWithComments(id);
+        return eventService.getWithComments(id);
     }
 }

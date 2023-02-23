@@ -20,20 +20,20 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public List<CategoryDto> getCategories(
+    public List<CategoryDto> get(
             @RequestParam(required = false, defaultValue = "0") Integer from,
             @RequestParam(required = false, defaultValue = "10") Integer size
     ) {
         log.info("Request endpoint: 'GET /categories'");
-        return categoryService.getCategories(from, size);
+        return categoryService.get(from, size);
     }
 
     @GetMapping("/{catId}")
-    public CategoryDto getCategory(@PathVariable Long catId) {
+    public CategoryDto get(@PathVariable Long catId) {
         log.info("Request endpoint: 'GET /categories/{}", catId);
         if (!categoryRepository.existsById(catId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such category");
         }
-        return categoryService.getCategory(catId);
+        return categoryService.get(catId);
     }
 }

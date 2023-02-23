@@ -21,8 +21,6 @@ import java.util.Set;
 public class StatsController {
     private final StatsService statsService;
 
-    private static final String DTFPattern = "yyyy-MM-dd HH:mm:ss";
-
     @PostMapping("/hit")
     public ResponseEntity<Void> saveHit(@RequestBody @Valid EndpointHitDto endpointHitDto) {
         log.info("Hit with URI = {} save to stats", endpointHitDto.getUri());
@@ -31,12 +29,12 @@ public class StatsController {
     }
 
     @GetMapping("/stats")
-    public ResponseEntity<List<ViewStatsDto>> getStats(
-            @RequestParam @DateTimeFormat(pattern = DTFPattern) LocalDateTime start,
-            @RequestParam @DateTimeFormat(pattern = DTFPattern) LocalDateTime end,
+    public ResponseEntity<List<ViewStatsDto>> get(
+            @RequestParam LocalDateTime start,
+            @RequestParam LocalDateTime end,
             @RequestParam(required = false) Set<String> uris,
             @RequestParam(required = false, defaultValue = "false") boolean unique) {
         log.info("Get hits statistics");
-        return ResponseEntity.status(HttpStatus.OK).body(statsService.getStats(start, end, uris, unique));
+        return ResponseEntity.status(HttpStatus.OK).body(statsService.get(start, end, uris, unique));
     }
 }

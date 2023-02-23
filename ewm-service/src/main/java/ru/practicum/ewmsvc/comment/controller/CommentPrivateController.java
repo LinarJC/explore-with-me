@@ -26,12 +26,12 @@ public class CommentPrivateController {
 
     @PostMapping("/{eventId}")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public CommentDto saveComment(
+    public CommentDto save(
             @PathVariable Long userId,
             @PathVariable Long eventId,
             @Validated({Create.class}) @RequestBody NewCommentDto dto
     ) {
-        Request request = requestService.getRequestByEventIdAndRequesterId(eventId, userId);
+        Request request = requestService.getByEventIdAndRequesterId(eventId, userId);
         if (request == null || !request.getStatus().equals("CONFIRMED")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "The user did not participate in the event");
@@ -41,11 +41,11 @@ public class CommentPrivateController {
                     "The comment already exists, go to the update method");
         }
         log.info("Adding a new comment by the user {} to the event {}", userId, eventId);
-        return commentService.saveComment(userId, eventId, dto);
+        return commentService.save(userId, eventId, dto);
     }
 
     @PatchMapping("/{commentId}")
-    public CommentDto updateComment(
+    public CommentDto update(
             @PathVariable Long userId,
             @PathVariable Long commentId,
             @Validated({Update.class}) @RequestBody NewCommentDto dto
@@ -54,11 +54,11 @@ public class CommentPrivateController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The comment cannot be updated");
         }
         log.info("Editing a comment {} by a user {}", commentId, userId);
-        return commentService.updateComment(userId, commentId, dto);
+        return commentService.update(userId, commentId, dto);
     }
 
     @DeleteMapping("/{commentId}")
-    public void deleteComment(
+    public void delete(
             @PathVariable Long userId,
             @PathVariable Long commentId
     ) {
@@ -66,6 +66,6 @@ public class CommentPrivateController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can't delete a comment");
         }
         log.info("Editing a comment {} by a user {}", commentId, userId);
-        commentService.deleteComment(userId, commentId);
+        commentService.delete(userId, commentId);
     }
 }

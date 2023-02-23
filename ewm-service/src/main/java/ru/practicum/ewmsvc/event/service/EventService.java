@@ -7,7 +7,7 @@ import ru.practicum.ewmsvc.request.dto.ParticipationRequestDto;
 import java.util.List;
 
 public interface EventService {
-    List<EventShortDto> getEvents(String ip,
+    List<EventShortDto> get(String ip,
                                   String text,
                                   List<Long> categories,
                                   Boolean paid,
@@ -18,7 +18,7 @@ public interface EventService {
                                   Integer from,
                                   Integer size);
 
-    List<EventFullDto> getEvents(List<Long> users,
+    List<EventFullDto> get(List<Long> users,
                                  List<String> states,
                                  List<Long> categories,
                                  String rangeStart,
@@ -26,36 +26,36 @@ public interface EventService {
                                  Integer from,
                                  Integer size);
 
-    List<EventShortDto> getEventsListByIdsList(List<Long> idList);
+    EventFullDto get(Long id, String ip);
 
-    EventFullDto getEvent(Long id, String ip);
+    Event get(Long eventId);
 
-    Event getEvent(Long eventId);
+    List<EventShortDto> getByIdsList(List<Long> idList);
 
-    List<EventShortDto> getEventsByUserId(Long userId, Integer from, Integer size);
+    List<EventShortDto> getByUserId(Long userId, Integer from, Integer size);
 
-    EventFullDto updateEvent(Long eventId, UpdateEventAdminRequest updatedEvent);
+    EventFullDto update(Long eventId, UpdateEventAdminRequest updatedEvent);
 
-    EventFullDto saveEvent(Long userId, NewEventDto newEventDto);
+    EventFullDto save(Long userId, NewEventDto newEventDto);
 
-    EventFullDto getEventByUserIdAndEventId(Long userId, Long eventId);
+    EventFullDto getByUserIdAndEventId(Long userId, Long eventId);
 
     EventRequestStatusUpdateResult changeRequestsStatus(
             Long userId, Long eventId, EventRequestStatusUpdateRequest request);
 
-    EventFullDto updateEventByUser(Long userId, Long eventId, UpdateEventUserRequest updateEvent);
+    EventFullDto updateByUser(Long userId, Long eventId, UpdateEventUserRequest updateEvent);
 
-    List<ParticipationRequestDto> getEventParticipationByUserId(Long userId, Long eventId);
+    List<ParticipationRequestDto> getParticipationByUserId(Long userId, Long eventId);
 
     ParticipationRequestDto confirmRequest(Long userId, Long eventId, Long reqId);
 
     ParticipationRequestDto declineRequest(Long userId, Long eventId, Long reqId);
 
-    EventFullDto publishEvent(Long eventId);
+    EventFullDto publish(Long eventId);
 
-    EventFullDto rejectEvent(Long eventId);
+    EventFullDto reject(Long eventId);
 
-    void checkEventsExist(List<Long> eventIds);
+    void exists(List<Long> eventIds);
 
-    EventWithCommentsDto getEventWithComments(Long id);
+    EventWithCommentsDto getWithComments(Long id);
 }

@@ -7,15 +7,15 @@ import java.util.List;
 
 public interface CommentService {
 
-    List<CommentDto> getCommentsByUserId(Long userId);
+    List<CommentDto> getByUserId(Long userId);
 
-    List<CommentDto> getCommentsByEventId(Long eventId);
+    List<CommentDto> getByEventId(Long eventId);
 
-    CommentDto saveComment(Long userId, Long eventId, NewCommentDto dto);
+    CommentDto save(Long userId, Long eventId, NewCommentDto dto);
 
-    CommentDto updateComment(Long userId, Long commentId, NewCommentDto dto);
+    CommentDto update(Long userId, Long commentId, NewCommentDto dto);
 
-    void deleteComment(Long userId, Long commentId);
+    void delete(Long userId, Long commentId);
 
-    CommentDto moderateComment(Long commentId, NewCommentDto dto);
+    CommentDto moderate(Long commentId, NewCommentDto dto);
 }

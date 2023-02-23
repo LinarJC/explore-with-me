@@ -10,5 +10,5 @@ import java.util.Set;
 public interface StatsService {
     void saveEndpointHit(EndpointHitDto endpointHitDto);
 
-    List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, Set<String> uris, boolean unique);
+    List<ViewStatsDto> get(LocalDateTime start, LocalDateTime end, Set<String> uris, boolean unique);
 }

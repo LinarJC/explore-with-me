@@ -12,7 +12,9 @@ import ru.practicum.ewmsvc.category.model.Category;
 import ru.practicum.ewmsvc.category.repository.CategoryRepository;
 import ru.practicum.ewmsvc.event.repository.EventRepository;
 
+import javax.transaction.Transactional;
 import javax.validation.ValidationException;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -25,7 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final EventRepository eventRepository;
 
     @Override
-    public List<CategoryDto> getCategories(Integer from, Integer size) {
+    public List<CategoryDto> get(Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size);
         Page<Category> categories = categoryRepository.findAll(pageable);
         return StreamSupport.stream(categories.spliterator(), false)
@@ -34,17 +36,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto getCategory(Long id) {
-        try {
+    public CategoryDto get(Long id) {
             Category category = categoryRepository.getReferenceById(id);
             return categoryMapper.mapCategoryToDto(category);
-        } catch (ValidationException exception) {
-            throw new ValidationException("No such category");
-        }
     }
 
     @Override
-    public CategoryDto patchCategory(Long catId, NewCategoryDto categoryDto) {
+    @Transactional
+    public CategoryDto update(Long catId, NewCategoryDto categoryDto) {
         if (categoryRepository.existsCategoryByName(categoryDto.getName())) {
             throw new ValidationException("Empty field");
         }
@@ -55,10 +54,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto saveCategory(NewCategoryDto categoryDto) {
-        if (categoryDto.getName() == null) {
-            throw new ValidationException("Empty field");
-        }
+    @Transactional
+    public CategoryDto save(@NotBlank NewCategoryDto categoryDto) {
         if (categoryRepository.existsCategoryByName(categoryDto.getName())) {
             throw new ValidationException("This name is exist");
         }
@@ -68,8 +65,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategory(Long catId) {
-        if (eventRepository.getCountFindEventsByCategory(catId) > 0) {
+    @Transactional
+    public void delete(Long catId) {
+        if (eventRepository.countEventsByCategory(catId) > 0) {
             throw new ValidationException("You can't delete a category with related events");
         }
         categoryRepository.deleteById(catId);

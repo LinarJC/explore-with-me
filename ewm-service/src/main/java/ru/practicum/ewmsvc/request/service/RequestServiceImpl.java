@@ -11,6 +11,7 @@ import ru.practicum.ewmsvc.request.repository.RequestRepository;
 import ru.practicum.ewmsvc.request.dto.ParticipationRequestDto;
 import ru.practicum.ewmsvc.request.model.Request;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,37 +23,39 @@ public class RequestServiceImpl implements RequestService {
     private final EventRepository eventRepository;
 
     @Override
-    public List<Request> getRequestsByEvent(Long eventId) {
-        return requestRepository.getRequestsByEvent(eventId);
+    public List<Request> getByEvent(Long eventId) {
+        return requestRepository.getRequestsByEventId(eventId);
     }
 
     @Override
-    public Request getRequestByReqId(Long eventId, Long reqId) {
-        return requestRepository.getRequestsByReqId(eventId, reqId);
+    public Request getByReqId(Long eventId, Long requestId) {
+        return requestRepository.getRequestByEventIdAndId(eventId, requestId);
     }
 
     @Override
-    public void saveRequest(Request request) {
-        requestRepository.save(request);
-    }
-
-    @Override
-    public Request getRequest(Long id) {
+    public Request get(Long id) {
         return requestRepository.getReferenceById(id);
     }
 
     @Override
-    public List<ParticipationRequestDto> getRequestsByUserId(Long userId) {
-        List<Request> requests = requestRepository.getRequestsByUserId(userId);
+    public List<ParticipationRequestDto> getByUserId(Long userId) {
+        List<Request> requests = requestRepository.getRequestsByRequesterId(userId);
         return requests.stream()
                 .map(requestMapper::mapToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ParticipationRequestDto saveRequest(Long userId, Long eventId) {
+    @Transactional
+    public void save(Request request) {
+        requestRepository.save(request);
+    }
+
+    @Override
+    @Transactional
+    public ParticipationRequestDto save(Long userId, Long eventId) {
         Event event = eventRepository.getReferenceById(eventId);
-        if (requestRepository.getRequestByUserIdAndEventId(userId, eventId) != null ||
+        if (requestRepository.getRequestByRequesterIdAndEventId(userId, eventId) != null ||
                 event.getInitiator().equals(userId) ||
                 !event.getState().equals("PUBLISHED") ||
                 (event.getConfirmedRequests().equals(event.getParticipantLimit()) && event.getParticipantLimit() != 0)) {
@@ -69,7 +72,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
+    @Transactional
+    public ParticipationRequestDto cancel(Long userId, Long requestId) {
         Request request = requestRepository.getReferenceById(requestId);
         request.setStatus("CANCELED");
         requestRepository.save(request);
@@ -77,7 +81,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Request getRequestByEventIdAndRequesterId(Long eventId, Long requesterId) {
-        return requestRepository.getRequestByUserIdAndEventId(requesterId, eventId);
+    public Request getByEventIdAndRequesterId(Long eventId, Long requesterId) {
+        return requestRepository.getRequestByRequesterIdAndEventId(requesterId, eventId);
     }
 }

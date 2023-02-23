@@ -7,29 +7,15 @@ import ru.practicum.ewmsvc.event.model.Event;
 
 import java.util.List;
 
-public interface EventRepository extends JpaRepository<Event, Long>,
-        QuerydslPredicateExecutor<Event> {
-
-    @Query(nativeQuery = true,
-            value = "SELECT * " +
-                    "FROM events " +
-                    "WHERE id IN (:idList)")
-    List<Event> getEventsListByIdList(List<Long> idList);
+public interface EventRepository extends JpaRepository<Event, Long>, QuerydslPredicateExecutor<Event> {
+    List<Event> getEventsByIdIn(List<Long> idList);
 
     @Query(nativeQuery = true,
             value = "SELECT id " +
                     "FROM events")
     List<Integer> getAllIds();
 
-    @Query(nativeQuery = true,
-            value = "SELECT * " +
-                    "FROM events " +
-                    "WHERE events.category = ?1")
     List<Event> findEventsByCategory(Long categoryId);
 
-    @Query(nativeQuery = true,
-            value = "SELECT COUNT(*) " +
-            "FROM events " +
-            "WHERE events.category = :catId")
-    Integer getCountFindEventsByCategory(Long catId);
+    Integer countEventsByCategory(Long categoryId);
 }

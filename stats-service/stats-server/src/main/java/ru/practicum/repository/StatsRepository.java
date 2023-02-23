@@ -19,7 +19,7 @@ public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
             " AND eh.timestamp BETWEEN :start AND :end " +
             " GROUP BY eh.app, eh.uri " +
             " ORDER BY COUNT (eh.uri) DESC")
-    List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, Set<String> uris);
+    List<ViewStatsDto> get(LocalDateTime start, LocalDateTime end, Set<String> uris);
 
     @Query("SELECT NEW ru.practicum.ViewStatsDto(eh.app, eh.uri, COUNT(DISTINCT eh.uri))" +
             " FROM EndpointHit eh" +

@@ -28,6 +28,7 @@ import ru.practicum.ewmsvc.user.repository.UserRepository;
 import ru.practicum.ewmsvc.user.model.User;
 import ru.practicum.ewmsvc.util.QPredicates;
 
+import javax.transaction.Transactional;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -57,7 +58,7 @@ public class EventServiceImpl implements EventService {
     private final CommentService commentService;
 
     @Override
-    public List<EventShortDto> getEvents(String ip,
+    public List<EventShortDto> get(String ip,
                                          String text,
                                          List<Long> categories,
                                          Boolean paid,
@@ -104,7 +105,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventFullDto> getEvents(List<Long> users,
+    public List<EventFullDto> get(List<Long> users,
                                         List<String> states,
                                         List<Long> categories,
                                         String rangeStart,
@@ -132,15 +133,15 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventShortDto> getEventsListByIdsList(List<Long> idList) {
-        List<Event> eventList = eventRepository.getEventsListByIdList(idList);
+    public List<EventShortDto> getByIdsList(List<Long> idList) {
+        List<Event> eventList = eventRepository.getEventsByIdIn(idList);
         return eventList.stream()
                 .map(eventMapper::mapToShortDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public EventFullDto getEvent(Long id, String ip) {
+    public EventFullDto get(Long id, String ip) {
         Event event = eventRepository.findById(id).get();
         Category category = categoryRepository.getReferenceById(event.getCategory());
         User user = userRepository.getReferenceById(event.getInitiator());
@@ -154,12 +155,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event getEvent(Long eventId) {
+    public Event get(Long eventId) {
         return eventRepository.getReferenceById(eventId);
     }
 
     @Override
-    public List<EventShortDto> getEventsByUserId(Long userId, Integer from, Integer size) {
+    public List<EventShortDto> getByUserId(Long userId, Integer from, Integer size) {
         Predicate predicate = QPredicates.builder()
                 .add(userId, event.initiator::eq)
                 .buildAnd();
@@ -171,7 +172,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto updateEventByUser(Long userId, Long eventId, UpdateEventUserRequest updateEventRequest) {
+    @Transactional
+    public EventFullDto updateByUser(Long userId, Long eventId, UpdateEventUserRequest updateEventRequest) {
         Event event = eventRepository.getReferenceById(eventId);
         if (event.getState().equals("PUBLISHED")) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "You cannot change a published event");
@@ -215,7 +217,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto updateEvent(Long eventId, UpdateEventAdminRequest updatedEvent) {
+    @Transactional
+    public EventFullDto update(Long eventId, UpdateEventAdminRequest updatedEvent) {
         Event event = eventRepository.getReferenceById(eventId);
         if (updatedEvent.getAnnotation() != null) {
             event.setAnnotation(updatedEvent.getAnnotation());
@@ -268,14 +271,15 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto saveEvent(Long userId, NewEventDto newEventDto) {
+    @Transactional
+    public EventFullDto save(Long userId, NewEventDto newEventDto) {
         Event event = eventMapper.mapNewToEvent(newEventDto, userId);
         eventRepository.save(event);
         return eventMapper.mapToFullDto(event);
     }
 
     @Override
-    public EventFullDto getEventByUserIdAndEventId(Long userId, Long eventId) {
+    public EventFullDto getByUserIdAndEventId(Long userId, Long eventId) {
         Event event = eventRepository.getReferenceById(eventId);
         if (!event.getInitiator().equals(userId)) {
             throw new BadRequestException("User " + userId + " not initiator");
@@ -284,18 +288,19 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<ParticipationRequestDto> getEventParticipationByUserId(Long userId, Long eventId) {
+    public List<ParticipationRequestDto> getParticipationByUserId(Long userId, Long eventId) {
         Event event = eventRepository.getReferenceById(eventId);
         if (!event.getInitiator().equals(userId)) {
             throw new BadRequestException("User " + userId + " not initiator");
         }
-        List<Request> requests = requestService.getRequestsByEvent(eventId);
+        List<Request> requests = requestService.getByEvent(eventId);
         return requests.stream()
                 .map(requestMapper::mapToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional
     public EventRequestStatusUpdateResult changeRequestsStatus(
             Long userId, Long eventId, EventRequestStatusUpdateRequest request) {
         Event event = eventRepository.getReferenceById(eventId);
@@ -306,26 +311,26 @@ public class EventServiceImpl implements EventService {
 
         if (!event.getRequestModeration() || Objects.equals(request.getStatus(), "REJECTED")) {
             for (Long id : request.getRequestIds()) {
-                Request request1 = requestService.getRequest(id);
+                Request request1 = requestService.get(id);
                 request1.setStatus("REJECTED");
                 rejectedRequests.add(requestMapper.mapToDto(request1));
-                requestService.saveRequest(request1);
+                requestService.save(request1);
             }
         }
         if (event.getConfirmedRequests().equals(event.getParticipantLimit())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The limit of applications has been exhausted");
         }
         for (Long id : request.getRequestIds()) {
-            Request request1 = requestService.getRequest(id);
+            Request request1 = requestService.get(id);
             if (event.getConfirmedRequests() < event.getParticipantLimit() && event.getRequestModeration()) {
                 request1.setStatus("CONFIRMED");
                 confirmedRequests.add(requestMapper.mapToDto(request1));
-                requestService.saveRequest(request1);
+                requestService.save(request1);
                 event.setConfirmedRequests(event.getConfirmedRequests() + 1);
             } else {
                 request1.setStatus("REJECTED");
                 rejectedRequests.add(requestMapper.mapToDto(request1));
-                requestService.saveRequest(request1);
+                requestService.save(request1);
             }
         }
         eventRepository.save(event);
@@ -333,6 +338,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public ParticipationRequestDto confirmRequest(Long userId, Long eventId, Long reqId) {
         Event event = eventRepository.getReferenceById(eventId);
         if (event.getParticipantLimit() == 0) {
@@ -341,24 +347,26 @@ public class EventServiceImpl implements EventService {
         if (event.getParticipantLimit() != 0 && event.getConfirmedRequests().equals(event.getParticipantLimit())) {
             throw new BadRequestException("There are no seats");
         }
-        Request request = requestService.getRequestByReqId(eventId, reqId);
+        Request request = requestService.getByReqId(eventId, reqId);
         request.setStatus("CONFIRMED");
-        requestService.saveRequest(request);
+        requestService.save(request);
         event.setConfirmedRequests(event.getConfirmedRequests() + 1);
         eventRepository.save(event);
         return requestMapper.mapToDto(request);
     }
 
     @Override
+    @Transactional
     public ParticipationRequestDto declineRequest(Long userId, Long eventId, Long reqId) {
-        Request request = requestService.getRequestByReqId(eventId, reqId);
+        Request request = requestService.getByReqId(eventId, reqId);
         request.setStatus("REJECTED");
-        requestService.saveRequest(request);
+        requestService.save(request);
         return requestMapper.mapToDto(request);
     }
 
     @Override
-    public EventFullDto publishEvent(Long eventId) {
+    @Transactional
+    public EventFullDto publish(Long eventId) {
         Event event = eventRepository.getReferenceById(eventId);
         if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Error when publishing an event");
@@ -369,7 +377,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto rejectEvent(Long eventId) {
+    @Transactional
+    public EventFullDto reject(Long eventId) {
         Event event = eventRepository.getReferenceById(eventId);
         if (event.getState() == "PUBLISHED") {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "The event has already been published");
@@ -380,7 +389,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void checkEventsExist(List<Long> eventIds) {
+    public void exists(List<Long> eventIds) {
         List<Integer> events = eventRepository.getAllIds();
         List<Long> eventList = events.stream().map(Long::valueOf).collect(Collectors.toList());
         for (Long event : eventIds) {
@@ -408,9 +417,9 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventWithCommentsDto getEventWithComments(Long id) {
+    public EventWithCommentsDto getWithComments(Long id) {
         Event event = eventRepository.getReferenceById(id);
-        List<CommentDto> comments = commentService.getCommentsByEventId(id);
+        List<CommentDto> comments = commentService.getByEventId(id);
         return eventMapper.mapToEventWithComments(event, comments);
     }
 }

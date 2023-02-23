@@ -16,6 +16,7 @@ import ru.practicum.ewmsvc.compilations.repository.CompilationRepository;
 import ru.practicum.ewmsvc.event.service.EventService;
 import ru.practicum.ewmsvc.event.dto.EventShortDto;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,25 +30,25 @@ public class CompilationServiceImpl implements CompilationService {
     private final CompilationMapper compilationMapper;
 
     @Override
-    public List<CompilationDto> getCompilations(Boolean pinned, Integer from, Integer size) {
+    public List<CompilationDto> get(Boolean pinned, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size);
         Page<Compilation> compilations;
         if (pinned == null) {
             compilations = compilationRepository.findAll(pageable);
         } else {
-            compilations = compilationRepository.getCompilations(pinned, pageable);
+            compilations = compilationRepository.getCompilationsByPinned(pinned, pageable);
         }
 
         List<CompilationDto> compilationDtoList = new ArrayList<>();
         for (Compilation compilation : compilations) {
             List<EventsCompilations> eventsCompilations =
-                    eventsCompilationsService.getCompilation(compilation.getId());
+                    eventsCompilationsService.get(compilation.getId());
             List<Long> eventIds = eventsCompilations.stream()
                     .map(EventsCompilations::getEventId)
                     .collect(Collectors.toList());
             List<EventShortDto> events = new ArrayList<>();
             if (eventIds.size() != 0) {
-                events = eventService.getEventsListByIdsList(eventIds);
+                events = eventService.getByIdsList(eventIds);
             }
             CompilationDto compilationDto = compilationMapper.mapToCompilationDto(compilation, events);
             compilationDtoList.add(compilationDto);
@@ -56,42 +57,45 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public CompilationDto getCompilation(Long compId) {
+    public CompilationDto get(Long compId) {
         Compilation compilation = compilationRepository.getReferenceById(compId);
 
         List<EventsCompilations> eventsCompilations =
-                eventsCompilationsService.getCompilation(compilation.getId());
+                eventsCompilationsService.get(compilation.getId());
         List<Long> eventIds = eventsCompilations.stream()
                 .map(EventsCompilations::getEventId)
                 .collect(Collectors.toList());
-        List<EventShortDto> events = eventService.getEventsListByIdsList(eventIds);
+        List<EventShortDto> events = eventService.getByIdsList(eventIds);
         CompilationDto compilationDto = compilationMapper.mapToCompilationDto(compilation, events);
 
         return compilationDto;
     }
 
     @Override
-    public CompilationDto saveCompilation(NewCompilationDto compilationDto) {
+    @Transactional
+    public CompilationDto save(NewCompilationDto compilationDto) {
         List<Long> eventIds = compilationDto.getEvents();
-        eventService.checkEventsExist(eventIds);
+        eventService.exists(eventIds);
         compilationRepository.save(compilationMapper.mapNewDtoToCompilation(compilationDto));
         Compilation compilation = compilationRepository.getCompilationByTitle(compilationDto.getTitle());
 
         for (Long eventId : eventIds) {
-            eventsCompilationsService.saveEventCompilation(
+            eventsCompilationsService.save(
                     new EventsCompilations(compilation.getId(), eventId)
             );
         }
-        return getCompilation(compilation.getId());
+        return get(compilation.getId());
     }
 
     @Override
-    public void deleteCompilation(Long compId) {
+    @Transactional
+    public void delete(Long compId) {
         compilationRepository.deleteById(compId);
     }
 
     @Override
-    public CompilationDto updateCompilation(Long compId, UpdateCompilationRequest request) {
+    @Transactional
+    public CompilationDto update(Long compId, UpdateCompilationRequest request) {
         Compilation compilation = compilationRepository.getReferenceById(compId);
         if (request.getPinned() != null) {
             compilation.setPinned(request.getPinned());
@@ -102,38 +106,41 @@ public class CompilationServiceImpl implements CompilationService {
         compilationRepository.save(compilation);
 
         if (request.getEvents() != null) {
-            List<EventsCompilations> eventsComp = eventsCompilationsService.getCompilation(compId);
+            List<EventsCompilations> eventsComp = eventsCompilationsService.get(compId);
             List<EventsCompilationsId> ids = new ArrayList<>();
             for (EventsCompilations ec : eventsComp) {
                 ids.add(new EventsCompilationsId(compId, ec.getEventId()));
             }
-            eventsCompilationsService.deleteEventsCompilations(ids);
+            eventsCompilationsService.delete(ids);
 
             List<EventsCompilations> ecList = new ArrayList<>();
             for (Long id : request.getEvents()) {
                 ecList.add(new EventsCompilations(compId, id));
             }
-            eventsCompilationsService.saveListOfEventsCompilations(ecList);
+            eventsCompilationsService.save(ecList);
         }
-        List<EventShortDto> eventShortDtos = eventService.getEventsListByIdsList(request.getEvents());
+        List<EventShortDto> eventShortDtos = eventService.getByIdsList(request.getEvents());
 
         return compilationMapper.mapToCompilationDto(compilation, eventShortDtos);
     }
 
     @Override
+    @Transactional
     public void deleteEventFromCompilation(Long compId, Long eventId) {
         eventsCompilationsService.deleteEventFromCompilation(compId, eventId);
     }
 
     @Override
-    public void unpinCompilation(Long compId) {
+    @Transactional
+    public void unpin(Long compId) {
         Compilation compilation = compilationRepository.getReferenceById(compId);
         compilation.setPinned(false);
         compilationRepository.save(compilation);
     }
 
     @Override
-    public void pinCompilation(Long compId) {
+    @Transactional
+    public void pin(Long compId) {
         Compilation compilation = compilationRepository.getReferenceById(compId);
         compilation.setPinned(true);
         compilationRepository.save(compilation);

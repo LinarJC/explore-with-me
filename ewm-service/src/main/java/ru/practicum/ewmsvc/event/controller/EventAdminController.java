@@ -17,7 +17,7 @@ public class EventAdminController {
     private final EventService eventService;
 
     @GetMapping
-    public List<EventFullDto> getEvents(
+    public List<EventFullDto> get(
             @RequestParam(required = false) List<Long> users,
             @RequestParam(required = false) List<String> states,
             @RequestParam(required = false) List<Long> categories,
@@ -27,26 +27,26 @@ public class EventAdminController {
             @RequestParam(required = false, defaultValue = "10") Integer size
     ) {
         log.info("Request endpoint: 'GET /events'");
-        return eventService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
+        return eventService.get(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
     @PatchMapping("/{eventId}")
-    public EventFullDto updateEvent(
+    public EventFullDto update(
             @PathVariable Long eventId,
             @RequestBody UpdateEventAdminRequest updatedEvent) {
         log.info("Request endpoint: 'PUT /admin/events/{}'", eventId);
-        return eventService.updateEvent(eventId, updatedEvent);
+        return eventService.update(eventId, updatedEvent);
     }
 
     @PatchMapping("/{eventId}/publish")
-    public EventFullDto publishEvent(@PathVariable Long eventId) {
+    public EventFullDto publish(@PathVariable Long eventId) {
         log.info("Request endpoint: 'PATCH /admin/events/{}/publish'", eventId);
-        return eventService.publishEvent(eventId);
+        return eventService.publish(eventId);
     }
 
     @PatchMapping("/{eventId}/reject")
-    public EventFullDto rejectEvent(@PathVariable Long eventId) {
+    public EventFullDto reject(@PathVariable Long eventId) {
         log.info("Request endpoint: 'GET /admin/events/{}/reject'", eventId);
-        return eventService.rejectEvent(eventId);
+        return eventService.reject(eventId);
     }
 }

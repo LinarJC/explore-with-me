@@ -6,13 +6,13 @@ import ru.practicum.ewmsvc.compilations.model.EventsCompilationsId;
 import java.util.List;
 
 public interface EventsCompilationsService {
-    List<EventsCompilations> getCompilation(Long compilationId);
+    List<EventsCompilations> get(Long compilationId);
 
-    void saveEventCompilation(EventsCompilations eventsCompilations);
+    void save(EventsCompilations eventsCompilations);
 
     void deleteEventFromCompilation(Long compId, Long eventId);
 
-    void deleteEventsCompilations(List<EventsCompilationsId> ids);
+    void delete(List<EventsCompilationsId> ids);
 
-    void saveListOfEventsCompilations(List<EventsCompilations> ecList);
+    void save(List<EventsCompilations> ecList);
 }

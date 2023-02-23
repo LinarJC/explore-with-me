@@ -6,20 +6,20 @@ import ru.practicum.ewmsvc.request.model.Request;
 import java.util.List;
 
 public interface RequestService {
-    List<Request> getRequestsByEvent(Long eventId);
+    List<Request> getByEvent(Long eventId);
 
-    Request getRequestByReqId(Long eventId, Long reqId);
+    Request getByReqId(Long eventId, Long reqId);
 
-    void saveRequest(Request request);
+    void save(Request request);
 
-    Request getRequest(Long id);
+    Request get(Long id);
 
-    List<ParticipationRequestDto> getRequestsByUserId(Long userId);
+    List<ParticipationRequestDto> getByUserId(Long userId);
 
-    ParticipationRequestDto saveRequest(Long userId, Long eventId);
+    ParticipationRequestDto save(Long userId, Long eventId);
 
-    ParticipationRequestDto cancelRequest(Long userId, Long requestId);
+    ParticipationRequestDto cancel(Long userId, Long requestId);
 
-    Request getRequestByEventIdAndRequesterId(Long eventId, Long requesterId);
+    Request getByEventIdAndRequesterId(Long eventId, Long requesterId);
 
 }

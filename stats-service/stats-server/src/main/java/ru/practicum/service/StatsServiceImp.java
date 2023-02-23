@@ -27,11 +27,11 @@ public class StatsServiceImp implements StatsService {
     }
 
     @Override
-    public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, Set<String> uris, boolean unique) {
+    public List<ViewStatsDto> get(LocalDateTime start, LocalDateTime end, Set<String> uris, boolean unique) {
         if (unique) {
             return statsRepository.getStatsUnique(start, end, uris);
         } else {
-            return statsRepository.getStats(start, end, uris);
+            return statsRepository.get(start, end, uris);
         }
     }
 }

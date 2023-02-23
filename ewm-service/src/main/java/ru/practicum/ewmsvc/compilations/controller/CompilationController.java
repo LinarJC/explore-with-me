@@ -16,18 +16,18 @@ public class CompilationController {
     private final CompilationService compilationService;
 
     @GetMapping
-    public List<CompilationDto> getCompilations(
+    public List<CompilationDto> get(
             @RequestParam(required = false) Boolean pinned,
             @RequestParam(required = false, defaultValue = "0") Integer from,
             @RequestParam(required = false, defaultValue = "10") Integer size
     ) {
         log.info("Request endpoint: 'GET /compilations'");
-        return compilationService.getCompilations(pinned, from, size);
+        return compilationService.get(pinned, from, size);
     }
 
     @GetMapping("/{compId}")
-    public CompilationDto getCompilation(@PathVariable Long compId) {
+    public CompilationDto get(@PathVariable Long compId) {
         log.info("Request endpoint: 'GET /compilations/{}'", compId);
-        return compilationService.getCompilation(compId);
+        return compilationService.get(compId);
     }
 }

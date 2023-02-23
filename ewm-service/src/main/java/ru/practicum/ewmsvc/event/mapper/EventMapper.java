@@ -51,16 +51,16 @@ public class EventMapper {
         return new EventFullDto(
                 event.getAnnotation(),
                 new EventFullDto.CategoryDto(
-                        categoryService.getCategory(event.getCategory()).getId(),
-                        categoryService.getCategory(event.getCategory()).getName()),
+                        categoryService.get(event.getCategory()).getId(),
+                        categoryService.get(event.getCategory()).getName()),
                 event.getConfirmedRequests(),
                 event.getCreatedOn(),
                 event.getDescription(),
                 event.getEventDate().format(outdtFormatter),
                 event.getId(),
                 new EventFullDto.UserShortDto(
-                        userService.getUser(event.getInitiator()).getId(),
-                        userService.getUser(event.getInitiator()).getName()),
+                        userService.get(event.getInitiator()).getId(),
+                        userService.get(event.getInitiator()).getName()),
                 new EventFullDto.Location(event.getLocationLat(), event.getLocationLon()),
                 event.getPaid(),
                 event.getParticipantLimit(),
@@ -76,14 +76,14 @@ public class EventMapper {
         return new EventShortDto(
                 event.getAnnotation(),
                 new EventFullDto.CategoryDto(
-                        categoryService.getCategory(event.getCategory()).getId(),
-                        categoryService.getCategory(event.getCategory()).getName()),
+                        categoryService.get(event.getCategory()).getId(),
+                        categoryService.get(event.getCategory()).getName()),
                 event.getConfirmedRequests(),
                 event.getEventDate().format(outdtFormatter),
                 event.getId(),
                 new EventFullDto.UserShortDto(
-                        userService.getUser(event.getInitiator()).getId(),
-                        userService.getUser(event.getInitiator()).getName()),
+                        userService.get(event.getInitiator()).getId(),
+                        userService.get(event.getInitiator()).getName()),
                 event.getPaid(),
                 event.getTitle(),
                 event.getViews()

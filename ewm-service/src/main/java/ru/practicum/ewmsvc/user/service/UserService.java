@@ -7,11 +7,11 @@ import ru.practicum.ewmsvc.user.dto.UserShortDto;
 import java.util.List;
 
 public interface UserService {
-    UserShortDto getUser(Long id);
+    UserShortDto get(Long id);
 
-    List<UserDto> getUsers(List<Long> ids, Integer from, Integer size);
+    List<UserDto> get(List<Long> ids, Integer from, Integer size);
 
-    UserDto saveUser(NewUserDto newUserDto);
+    UserDto save(NewUserDto newUserDto);
 
-    void deleteUser(Long userId);
+    void delete(Long userId);
 }

@@ -17,9 +17,9 @@ public class CommentAdminController {
     private final CommentService commentService;
 
     @PatchMapping("/{commentId}")
-    public CommentDto moderateComment(@PathVariable Long commentId, @Validated({Update.class}) @RequestBody NewCommentDto dto
+    public CommentDto moderate(@PathVariable Long commentId, @Validated({Update.class}) @RequestBody NewCommentDto dto
     ) {
         log.info("Comment moderation {}", commentId);
-        return commentService.moderateComment(commentId, dto);
+        return commentService.moderate(commentId, dto);
     }
 }

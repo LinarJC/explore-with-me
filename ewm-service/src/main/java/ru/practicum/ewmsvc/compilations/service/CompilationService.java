@@ -8,19 +8,19 @@ import java.util.List;
 
 public interface CompilationService {
 
-    List<CompilationDto> getCompilations(Boolean pinned, Integer from, Integer size);
+    List<CompilationDto> get(Boolean pinned, Integer from, Integer size);
 
-    CompilationDto getCompilation(Long compId);
+    CompilationDto get(Long compId);
 
-    CompilationDto saveCompilation(NewCompilationDto compilationDto);
+    CompilationDto save(NewCompilationDto compilationDto);
 
-    void deleteCompilation(Long compId);
+    void delete(Long compId);
 
-    CompilationDto updateCompilation(Long compId, UpdateCompilationRequest request);
+    CompilationDto update(Long compId, UpdateCompilationRequest request);
 
     void deleteEventFromCompilation(Long compId, Long eventId);
 
-    void unpinCompilation(Long compId);
+    void unpin(Long compId);
 
-    void pinCompilation(Long compId);
+    void pin(Long compId);
 }

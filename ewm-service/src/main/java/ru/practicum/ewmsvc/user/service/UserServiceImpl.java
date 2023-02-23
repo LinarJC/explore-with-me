@@ -25,16 +25,16 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public UserShortDto getUser(Long id) {
+    public UserShortDto get(Long id) {
         return userMapper.mapToUserShortDto(userRepository.getReferenceById(id));
     }
 
     @Override
-    public List<UserDto> getUsers(List<Long> ids, Integer from, Integer size) {
+    public List<UserDto> get(List<Long> ids, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size);
         Iterable<User> users;
         if (ids != null) {
-            users = userRepository.getUsersListByIdList(ids, pageable);
+            users = userRepository.getUsersByIdIn(ids, pageable);
         } else {
             users = userRepository.findAll(pageable);
         }
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto saveUser(NewUserDto newUserDto) {
+    public UserDto save(NewUserDto newUserDto) {
         if (newUserDto.getName() == null || newUserDto.getEmail() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Uncorrected request");
         }
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(Long userId) {
+    public void delete(Long userId) {
         userRepository.deleteById(userId);
     }
 }

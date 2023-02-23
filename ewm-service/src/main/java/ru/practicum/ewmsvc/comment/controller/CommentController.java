@@ -19,8 +19,8 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping("/{userId}")
-    public List<CommentDto> getCommentsByUserId(@PathVariable Long userId) {
+    public List<CommentDto> getByUserId(@PathVariable Long userId) {
         log.info("All user comments requested {}", userId);
-        return commentService.getCommentsByUserId(userId);
+        return commentService.getByUserId(userId);
     }
 }

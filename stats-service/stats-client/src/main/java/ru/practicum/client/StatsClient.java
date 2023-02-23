@@ -37,7 +37,7 @@ public class StatsClient {
         }
     }
 
-    public static List<ViewStatsDto> getStats(String start, String end, List<String> uris, Boolean unique) {
+    public static List<ViewStatsDto> get(String start, String end, List<String> uris, Boolean unique) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));

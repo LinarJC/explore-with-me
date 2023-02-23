@@ -24,25 +24,25 @@ public class CompilationAdminController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public CompilationDto saveCompilation(
+    public CompilationDto save(
             @Validated({Create.class}) @RequestBody NewCompilationDto compilationDto
     ) {
         log.info("Request endpoint: 'POST /admin/compilations'");
-        return compilationService.saveCompilation(compilationDto);
+        return compilationService.save(compilationDto);
     }
 
     @DeleteMapping("/{compId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void deleteCompilation(@PathVariable Long compId) {
+    public void delete(@PathVariable Long compId) {
         log.info("Request endpoint: 'DELETE /admin/compilations/{}'", compId);
-        compilationService.deleteCompilation(compId);
+        compilationService.delete(compId);
     }
 
     @PatchMapping("/{compId}")
-    public CompilationDto updateCompilation(@PathVariable Long compId,
+    public CompilationDto update(@PathVariable Long compId,
                                             @RequestBody UpdateCompilationRequest request) {
         log.info("Request endpoint: 'PATCH /admin/compilations/{}'", compId);
-        return compilationService.updateCompilation(compId, request);
+        return compilationService.update(compId, request);
     }
 
     @DeleteMapping("/{compId}/events/{eventId}")
@@ -60,18 +60,18 @@ public class CompilationAdminController {
             @PathVariable Long eventId
     ) {
         log.info("Request endpoint: 'GET /admin/compilations/{}/events/{}'", compId, eventId);
-        eventsCompilationsService.saveEventCompilation(new EventsCompilations(compId, eventId));
+        eventsCompilationsService.save(new EventsCompilations(compId, eventId));
     }
 
     @DeleteMapping("/{compId}/pin")
-    public void unpinCompilation(@PathVariable Long compId) {
+    public void unpin(@PathVariable Long compId) {
         log.info("Request endpoint: 'GET /admin/compilations/{}/pin'", compId);
-        compilationService.unpinCompilation(compId);
+        compilationService.unpin(compId);
     }
 
     @PatchMapping("/{compId}/pin")
-    public void pinCompilation(@PathVariable Long compId) {
+    public void pin(@PathVariable Long compId) {
         log.info("Request endpoint: 'GET /admin/compilations/{}/pin'", compId);
-        compilationService.pinCompilation(compId);
+        compilationService.pin(compId);
     }
 }
